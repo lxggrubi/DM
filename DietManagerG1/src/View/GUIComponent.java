@@ -1,443 +1,535 @@
-package View;
+package view;
+import javax.swing.*;
 
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import javax.swing.JTextArea;
-import com.toedter.calendar.JDateChooser;
+import controller.DietController;
+import model.DietLog;
+import model.Exercise;
+import model.Food;
+
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+import java.util.Set;
+import java.awt.FlowLayout;
+
+public class GUIComponent extends JFrame implements ActionListener {
+
+	private JTextField weightTextField;
+	private JTextField calorieTextField;
+	public JComboBox foodComboBox;
+	private JTextField foodQtyTextField;
+	private DietController dietController;
+    private ViewMediator viewMediator;
+    private Set<String> foodList;
+    private Set<String> exerciseList;
+    private JTextField timeTextField;
+    private JTextField dateTextField;
+    JScrollPane consumedScrollPane;
+    JPanel consumedFoodPanel;
+    JScrollPane exerciseScrollPanel;
+    JPanel exercisesLoggedPanel;
+    JLabel calsLbl;
+    JLabel nameLbl;
+    JLabel weightLbl;
+    JLabel expendedLbl;
+    JLabel netLbl;
+    private JTextField nameTextField;
+
+	public GUIComponent(DietController dietController, ViewMediator viewMediator) {
+		
+		this.dietController = dietController;
+        this.viewMediator = viewMediator;
+        
+        foodList = dietController.getFoodListKeys();
+        exerciseList = dietController.getExerciseNames();
+        
+        addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent e) {
+                dietController.writeCSV();
+                //System.exit(0);
+            }
+        });
+
+		SpringLayout springLayout = new SpringLayout();
+		getContentPane().setLayout(springLayout);
+
+		JLabel lblDietManager = new JLabel("DIET MANAGER");
+		springLayout.putConstraint(SpringLayout.NORTH, lblDietManager, 10, SpringLayout.NORTH, getContentPane());
+		lblDietManager.setFont(new Font("Lucida Grande", Font.PLAIN, 50));
+		getContentPane().add(lblDietManager);
+
+		JLabel lblLogFood = new JLabel("LOG FOOD");
+		springLayout.putConstraint(SpringLayout.WEST, lblLogFood, 191, SpringLayout.WEST, getContentPane());
+		lblLogFood.setFont(new Font("Lucida Grande", Font.BOLD, 35));
+		getContentPane().add(lblLogFood);
+
+		JLabel lblLogWeight = new JLabel("LOG WEIGHT");
+		springLayout.putConstraint(SpringLayout.NORTH, lblLogWeight, 379, SpringLayout.NORTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, lblLogWeight, 0, SpringLayout.WEST, lblLogFood);
+		lblLogWeight.setFont(new Font("Lucida Grande", Font.BOLD, 35));
+		getContentPane().add(lblLogWeight);
+
+		JLabel lblLogCaloriesLimit = new JLabel("LOG CALORIES LIMIT");
+		springLayout.putConstraint(SpringLayout.NORTH, lblLogCaloriesLimit, 0, SpringLayout.NORTH, lblLogWeight);
+		lblLogCaloriesLimit.setFont(new Font("Lucida Grande", Font.BOLD, 35));
+		getContentPane().add(lblLogCaloriesLimit);
+
+		JLabel lblSelectFood = new JLabel("Select food:");
+		springLayout.putConstraint(SpringLayout.SOUTH, lblLogFood, -17, SpringLayout.NORTH, lblSelectFood);
+		lblSelectFood.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
+		springLayout.putConstraint(SpringLayout.NORTH, lblSelectFood, 190, SpringLayout.NORTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, lblSelectFood, 44, SpringLayout.WEST, getContentPane());
+		getContentPane().add(lblSelectFood);
+
+		JLabel lblQuantity = new JLabel("Quantity:");
+		lblQuantity.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
+		springLayout.putConstraint(SpringLayout.NORTH, lblQuantity, 17, SpringLayout.SOUTH, lblSelectFood);
+		springLayout.putConstraint(SpringLayout.EAST, lblQuantity, 0, SpringLayout.EAST, lblSelectFood);
+		getContentPane().add(lblQuantity);
+
+		JLabel lblWeight = new JLabel("Weight:");
+		springLayout.putConstraint(SpringLayout.NORTH, lblWeight, 427, SpringLayout.NORTH, getContentPane());
+		lblWeight.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
+		springLayout.putConstraint(SpringLayout.EAST, lblWeight, 0, SpringLayout.EAST, lblSelectFood);
+		getContentPane().add(lblWeight);
+
+		JLabel lblCalorieLimit = new JLabel("Calorie limit:");
+		springLayout.putConstraint(SpringLayout.WEST, lblDietManager, 0, SpringLayout.WEST, lblCalorieLimit);
+		springLayout.putConstraint(SpringLayout.NORTH, lblCalorieLimit, 6, SpringLayout.SOUTH, lblLogCaloriesLimit);
+		lblCalorieLimit.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
+		getContentPane().add(lblCalorieLimit);
+
+		foodComboBox = new JComboBox();
+		springLayout.putConstraint(SpringLayout.SOUTH, foodComboBox, 0, SpringLayout.SOUTH, lblSelectFood);
+		springLayout.putConstraint(SpringLayout.EAST, foodComboBox, 0, SpringLayout.EAST, lblLogFood);
+		getContentPane().add(foodComboBox);
+
+		weightTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.SOUTH, weightTextField, 0, SpringLayout.SOUTH, lblWeight);
+		springLayout.putConstraint(SpringLayout.EAST, weightTextField, 0, SpringLayout.EAST, lblLogWeight);
+		getContentPane().add(weightTextField);
+		weightTextField.setColumns(10);
+
+		calorieTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.NORTH, calorieTextField, 11, SpringLayout.NORTH, lblWeight);
+		springLayout.putConstraint(SpringLayout.EAST, calorieTextField, 0, SpringLayout.EAST, lblLogCaloriesLimit);
+		getContentPane().add(calorieTextField);
+		calorieTextField.setColumns(10);		
 
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- *
- * @author matijaselak
- */
-public class GUIComponent extends javax.swing.JFrame {
+		JButton btnLogWeight = new JButton("Log Weight");
+		btnLogWeight.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		springLayout.putConstraint(SpringLayout.NORTH, btnLogWeight, 6, SpringLayout.SOUTH, weightTextField);
+		springLayout.putConstraint(SpringLayout.WEST, btnLogWeight, 250, SpringLayout.WEST, getContentPane());
+		getContentPane().add(btnLogWeight);
 
-    private static final String COMMA_DELIMITER = ",";
-    private static final String NEW_LINE_SEPARATOR = "\n";
-    public JTextArea textArea;
-    SimpleDateFormat format = new SimpleDateFormat("yyyy,MM,dd");
+		JButton btnLogCalories = new JButton("Log Calories");
+		springLayout.putConstraint(SpringLayout.NORTH, btnLogCalories, 0, SpringLayout.NORTH, btnLogWeight);
+		springLayout.putConstraint(SpringLayout.WEST, btnLogCalories, 442, SpringLayout.EAST, btnLogWeight);
+		btnLogCalories.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		getContentPane().add(btnLogCalories);
 
-    /**
-     * Creates new form TestGUI
-     */
-    public GUIComponent() {
-        initComponents();
-        this.setLocationRelativeTo(null);
+		JButton btnViewLog = new JButton("View Log");
+		springLayout.putConstraint(SpringLayout.NORTH, btnViewLog, 64, SpringLayout.SOUTH, lblCalorieLimit);
+		springLayout.putConstraint(SpringLayout.SOUTH, btnViewLog, -77, SpringLayout.SOUTH, getContentPane());
+		btnViewLog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		getContentPane().add(btnViewLog);
+		
+		foodQtyTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.SOUTH, foodQtyTextField, 0, SpringLayout.SOUTH, lblQuantity);
+		springLayout.putConstraint(SpringLayout.EAST, foodQtyTextField, 0, SpringLayout.EAST, lblLogFood);
+		getContentPane().add(foodQtyTextField);
+		foodQtyTextField.setColumns(10);
+		
+		JButton btnAddNewFood = new JButton("Add New Food");
+		springLayout.putConstraint(SpringLayout.WEST, btnAddNewFood, 739, SpringLayout.WEST, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, btnViewLog, -6, SpringLayout.WEST, btnAddNewFood);
+		springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewFood, -77, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.NORTH, btnAddNewFood, 29, SpringLayout.SOUTH, btnLogCalories);
+		btnAddNewFood.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddFood newFood = new AddFood(dietController, viewMediator);
+			}
+		});
+		getContentPane().add(btnAddNewFood);
+		
+		JButton btnAddNewRecipe = new JButton("Add New Recipe");
+		springLayout.putConstraint(SpringLayout.EAST, btnAddNewRecipe, -970, SpringLayout.EAST, getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, btnViewLog, 6, SpringLayout.EAST, btnAddNewRecipe);
+		springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewRecipe, -77, SpringLayout.SOUTH, getContentPane());
+		btnAddNewRecipe.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddRecipeForm newRecipe = new AddRecipeForm(dietController, viewMediator);
+			}
+		});
+		getContentPane().add(btnAddNewRecipe);
+		
+		JButton btnLog = new JButton("Log");
+		btnLog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+                    dietController.logFood(foodComboBox.getSelectedItem().toString(),
+                            Double.parseDouble(foodQtyTextField.getText()),
+                            dietController.getCurrentDate());
+                    resetLogPanel();
+                    viewMediator.updateDailyValues();
+                    JOptionPane.showMessageDialog(null,
+                            "Food successfully logged");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "Food failed to log, please ensure your serving value is valid.");
+                }
+			}
+		});
+		springLayout.putConstraint(SpringLayout.NORTH, btnLog, 6, SpringLayout.SOUTH, foodQtyTextField);
+		springLayout.putConstraint(SpringLayout.EAST, btnLog, 0, SpringLayout.EAST, btnLogWeight);
+		getContentPane().add(btnLog);
+		
+		JButton btnAddNewExercise = new JButton("Add New Exercise");
+		springLayout.putConstraint(SpringLayout.WEST, btnAddNewRecipe, 6, SpringLayout.EAST, btnAddNewExercise);
+		springLayout.putConstraint(SpringLayout.NORTH, btnAddNewExercise, 29, SpringLayout.SOUTH, btnLogWeight);
+		springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewExercise, -77, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, btnAddNewExercise, -1126, SpringLayout.EAST, getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, btnAddNewExercise, 281, SpringLayout.WEST, getContentPane());
+		btnAddNewExercise.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddExerciseForm exercise = new AddExerciseForm(dietController, viewMediator);
+				exercise.setVisible(true);
+			}
+		});
+		getContentPane().add(btnAddNewExercise);
+		
+		JLabel lblLogExercise = new JLabel("LOG EXERCISE:");
+		springLayout.putConstraint(SpringLayout.NORTH, lblLogExercise, 0, SpringLayout.NORTH, lblLogFood);
+		springLayout.putConstraint(SpringLayout.WEST, lblLogExercise, 423, SpringLayout.EAST, lblLogFood);
+		lblLogExercise.setFont(new Font("Lucida Grande", Font.BOLD, 35));
+		getContentPane().add(lblLogExercise);
+		
+		JLabel lblSelectExercise = new JLabel("Select exercise:");
+		springLayout.putConstraint(SpringLayout.WEST, lblCalorieLimit, 0, SpringLayout.WEST, lblSelectExercise);
+		springLayout.putConstraint(SpringLayout.NORTH, lblSelectExercise, 0, SpringLayout.NORTH, lblSelectFood);
+		springLayout.putConstraint(SpringLayout.WEST, lblSelectExercise, 215, SpringLayout.EAST, foodComboBox);
+		lblSelectExercise.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
+		getContentPane().add(lblSelectExercise);
+		
+		JLabel lblTimeinMinutes = new JLabel("Time (in minutes):");
+		springLayout.putConstraint(SpringLayout.NORTH, btnAddNewRecipe, 248, SpringLayout.SOUTH, lblTimeinMinutes);
+		springLayout.putConstraint(SpringLayout.NORTH, lblTimeinMinutes, 0, SpringLayout.NORTH, lblQuantity);
+		springLayout.putConstraint(SpringLayout.EAST, lblTimeinMinutes, 0, SpringLayout.EAST, lblSelectExercise);
+		lblTimeinMinutes.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
+		getContentPane().add(lblTimeinMinutes);
+		
+		JComboBox exerciseComboBox = new JComboBox();
+		springLayout.putConstraint(SpringLayout.SOUTH, exerciseComboBox, 0, SpringLayout.SOUTH, lblSelectFood);
+		springLayout.putConstraint(SpringLayout.EAST, exerciseComboBox, 0, SpringLayout.EAST, lblLogExercise);
+		getContentPane().add(exerciseComboBox);
+		
+		timeTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.NORTH, timeTextField, 11, SpringLayout.NORTH, lblQuantity);
+		springLayout.putConstraint(SpringLayout.EAST, timeTextField, 0, SpringLayout.EAST, lblLogExercise);
+		getContentPane().add(timeTextField);
+		timeTextField.setColumns(10);
+		
+		JButton btnLogExercise = new JButton("Log Exercise");
+		springLayout.putConstraint(SpringLayout.NORTH, btnLogExercise, 0, SpringLayout.NORTH, btnLog);
+		springLayout.putConstraint(SpringLayout.WEST, btnLogExercise, 457, SpringLayout.EAST, btnLog);
+		btnLogExercise.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+                    dietController.logExercise(exerciseComboBox.getSelectedItem().toString(),
+                            Double.parseDouble(timeTextField.getText()),
+                            dietController.getCurrentDate());
+                    resetExercisePanel();
+                    viewMediator.updateDailyValues();
+                    JOptionPane.showMessageDialog(null,
+                            "Exercise successfully logged");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null,
+                            "Exercise failed to log, please ensure your time value is valid.");
+                }
+			}
+		});
+		getContentPane().add(btnLogExercise);
+		
+		JLabel lblDate = new JLabel("Date:");
+		lblDate.setFont(new Font("Lucida Grande", Font.PLAIN, 22));
+		getContentPane().add(lblDate);
+		
+		dateTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.NORTH, dateTextField, 17, SpringLayout.SOUTH, lblDietManager);
+		springLayout.putConstraint(SpringLayout.NORTH, lblDate, -4, SpringLayout.NORTH, dateTextField);
+		springLayout.putConstraint(SpringLayout.EAST, lblDate, -24, SpringLayout.WEST, dateTextField);
+		springLayout.putConstraint(SpringLayout.WEST, dateTextField, 0, SpringLayout.WEST, lblTimeinMinutes);
+		getContentPane().add(dateTextField);
+		dateTextField.setColumns(10);
+		
+		JButton btnChangeDate = new JButton("Change Date");
+		springLayout.putConstraint(SpringLayout.NORTH, btnChangeDate, 17, SpringLayout.SOUTH, lblDietManager);
+		btnChangeDate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				 try {
+	                    dietController.setCurrentDate(dateTextField.getText());
+	                    viewMediator.updateDailyValues();
+	                } catch (Exception ex) {
+	                    JOptionPane.showMessageDialog(null,
+	                            "Unable to change date, please ensure your date is in YYYY/MM/DD format.");
+	                }
+			}
+		});
+		springLayout.putConstraint(SpringLayout.WEST, lblLogCaloriesLimit, 0, SpringLayout.WEST, btnChangeDate);
+		springLayout.putConstraint(SpringLayout.WEST, btnChangeDate, 6, SpringLayout.EAST, dateTextField);
+		getContentPane().add(btnChangeDate);
+		
+		JPanel panel = new JPanel();
+		springLayout.putConstraint(SpringLayout.NORTH, panel, 131, SpringLayout.NORTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.WEST, panel, 103, SpringLayout.EAST, lblLogExercise);
+		springLayout.putConstraint(SpringLayout.EAST, panel, -64, SpringLayout.EAST, getContentPane());
+		getContentPane().add(panel);
+		
+		JPanel panel_1 = new JPanel();
+		springLayout.putConstraint(SpringLayout.WEST, panel_1, 229, SpringLayout.EAST, btnLogExercise);
+		springLayout.putConstraint(SpringLayout.SOUTH, panel_1, -323, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, panel_1, 0, SpringLayout.EAST, panel);
+		getContentPane().add(panel_1);
+		
+		JPanel panel_2 = new JPanel();
+		springLayout.putConstraint(SpringLayout.NORTH, panel_1, 6, SpringLayout.SOUTH, panel_2);
+		springLayout.putConstraint(SpringLayout.WEST, panel_2, 103, SpringLayout.EAST, timeTextField);
+		springLayout.putConstraint(SpringLayout.SOUTH, panel_2, -365, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, panel_2, 0, SpringLayout.EAST, panel);
+		panel_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblNetCalories = new JLabel("Net calories:");
+		panel_1.add(lblNetCalories);
+		
+		netLbl = new JLabel("0.0");
+		panel_1.add(netLbl);
+		getContentPane().add(panel_2);
+		
+		JPanel panel_3 = new JPanel();
+		springLayout.putConstraint(SpringLayout.NORTH, panel_2, 6, SpringLayout.SOUTH, panel_3);
+		springLayout.putConstraint(SpringLayout.WEST, panel_3, 0, SpringLayout.WEST, panel);
+		springLayout.putConstraint(SpringLayout.SOUTH, panel_3, -407, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, panel_3, 0, SpringLayout.EAST, panel);
+		panel_2.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblCaloriesExpended = new JLabel("Calories expended:");
+		panel_2.add(lblCaloriesExpended);
+		
+		expendedLbl = new JLabel("0.0");
+		panel_2.add(expendedLbl);
+		getContentPane().add(panel_3);
+		
+		JPanel panel_4 = new JPanel();
+		springLayout.putConstraint(SpringLayout.NORTH, panel_3, 6, SpringLayout.SOUTH, panel_4);
+		springLayout.putConstraint(SpringLayout.SOUTH, panel, -6, SpringLayout.NORTH, panel_4);
+		springLayout.putConstraint(SpringLayout.SOUTH, panel_4, -449, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.NORTH, panel_4, 173, SpringLayout.NORTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, panel_4, 0, SpringLayout.EAST, panel);
+		springLayout.putConstraint(SpringLayout.WEST, panel_4, 103, SpringLayout.EAST, exerciseComboBox);
+		panel_3.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblCaloriesConsumed = new JLabel("Calories consumed:");
+		panel_3.add(lblCaloriesConsumed);
+		
+		calsLbl = new JLabel("0");
+		panel_3.add(calsLbl);
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblName = new JLabel("Name:");
+		panel.add(lblName);
+		
+		nameLbl = new JLabel("default");
+		panel.add(nameLbl);
+		getContentPane().add(panel_4);
+		panel_4.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		
+		JLabel lblWeight_1 = new JLabel("Weight");
+		panel_4.add(lblWeight_1);
+		
+		weightLbl = new JLabel("0.0 lbs");
+		panel_4.add(weightLbl);
+		
+		// PANES SHIT
+		consumedScrollPane = new JScrollPane();
+		springLayout.putConstraint(SpringLayout.NORTH, consumedScrollPane, 24, SpringLayout.SOUTH, panel_1);
+		springLayout.putConstraint(SpringLayout.WEST, consumedScrollPane, 0, SpringLayout.WEST, panel);
+		springLayout.putConstraint(SpringLayout.SOUTH, consumedScrollPane, -199, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, consumedScrollPane, -64, SpringLayout.EAST, getContentPane());
+		getContentPane().add(consumedScrollPane);
+		
+		consumedFoodPanel = new JPanel();
+		consumedScrollPane.setViewportView(consumedFoodPanel);
+		consumedFoodPanel.setLayout(new BoxLayout(consumedFoodPanel, BoxLayout.X_AXIS));
+		
+		exerciseScrollPanel = new JScrollPane();
+		springLayout.putConstraint(SpringLayout.EAST, btnAddNewFood, -284, SpringLayout.WEST, exerciseScrollPanel);
+		springLayout.putConstraint(SpringLayout.NORTH, exerciseScrollPanel, 23, SpringLayout.SOUTH, consumedScrollPane);
+		springLayout.putConstraint(SpringLayout.WEST, exerciseScrollPanel, 0, SpringLayout.WEST, panel);
+		springLayout.putConstraint(SpringLayout.SOUTH, exerciseScrollPanel, -70, SpringLayout.SOUTH, getContentPane());
+		springLayout.putConstraint(SpringLayout.EAST, exerciseScrollPanel, -64, SpringLayout.EAST, getContentPane());
+		getContentPane().add(exerciseScrollPanel);
+		
+		exercisesLoggedPanel = new JPanel();
+		exerciseScrollPanel.setViewportView(exercisesLoggedPanel);
+		exercisesLoggedPanel.setLayout(new BoxLayout(exercisesLoggedPanel, BoxLayout.X_AXIS));
+		
+		JLabel lblNewLabel = new JLabel("Name:");
+		lblNewLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 22));
+		springLayout.putConstraint(SpringLayout.WEST, lblNewLabel, 41, SpringLayout.WEST, getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, lblNewLabel, 0, SpringLayout.SOUTH, lblDate);
+		getContentPane().add(lblNewLabel);
+		
+		nameTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.NORTH, nameTextField, 4, SpringLayout.NORTH, lblDate);
+		springLayout.putConstraint(SpringLayout.WEST, nameTextField, 24, SpringLayout.EAST, lblNewLabel);
+		getContentPane().add(nameTextField);
+		nameTextField.setColumns(10);
+		
+		JButton btnSubmit = new JButton("Submit");
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dietController.setUserName(nameTextField.getText());
+                viewMediator.updateDailyValues();
+			}
+		});
+		springLayout.putConstraint(SpringLayout.NORTH, btnSubmit, 4, SpringLayout.NORTH, lblDate);
+		springLayout.putConstraint(SpringLayout.EAST, btnSubmit, 0, SpringLayout.EAST, lblLogFood);
+		getContentPane().add(btnSubmit);
+		
+		JButton btnSaveExit = new JButton("Save & Exit");
+		btnSaveExit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dietController.writeCSV();
+				//System.exit(0);
+			}
+		});
+		btnSaveExit.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
+		springLayout.putConstraint(SpringLayout.NORTH, btnSaveExit, 6, SpringLayout.SOUTH, btnViewLog);
+		springLayout.putConstraint(SpringLayout.WEST, btnSaveExit, 515, SpringLayout.WEST, getContentPane());
+		springLayout.putConstraint(SpringLayout.SOUTH, btnSaveExit, 67, SpringLayout.SOUTH, btnViewLog);
+		springLayout.putConstraint(SpringLayout.EAST, btnSaveExit, -497, SpringLayout.WEST, exerciseScrollPanel);
+		getContentPane().add(btnSaveExit);
+	}
+	
+	private JScrollPane showFoodConsumed() {
+		DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
+
+        ArrayList<Food> dailyFood = log.getDailyFood();
+        for (int i = 0; i<dailyFood.size(); i++) {
+            Food food = dailyFood.get(i);
+
+            JPanel innerPanel = new JPanel();
+            JLabel innerLabel = new JLabel("Food: " + food.getName() + "  Servings: " + food.getServing()
+                    + "  Calories: " + food.getCalories());
+            JButton innerButton = new JButton("-");
+            final int index = i;
+            innerButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dietController.removeFoodFromLog(index);
+                    //updateValues();
+                }
+            });
+
+            innerPanel.add(innerLabel);
+            innerPanel.add(innerButton);
+            consumedFoodPanel.add(innerPanel);
+        }
+
+       return consumedScrollPane;
+	}
+	
+	private JScrollPane showExercisesLogged() {
+		DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
+
+        ArrayList<Exercise> dailyExercise = log.getDailyExercise();
+        for (int i = 0; i < dailyExercise.size(); i++) {
+            Exercise exercise = dailyExercise.get(i);
+
+            JPanel innerPanel = new JPanel();
+            JLabel innerLabel = new JLabel("Exercise: " + exercise.getName() + "  Calories Burned: " + exercise.getCaloriesBurned());
+
+            JButton innerButton = new JButton("-");
+            final int index = i;
+            innerButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dietController.removeExerciseFromLog(index);
+                    //updateValues();
+                }
+            });
+
+            innerPanel.add(innerLabel);
+            innerPanel.add(innerButton);
+            exercisesLoggedPanel.add(innerPanel);
+        }
+
+        return exerciseScrollPanel;
+	}
+	
+	public void updateValues() {
+        DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
+
+        nameLbl.setText(dietController.getUserName());
+        weightLbl.setText(Double.toString(log.getDailyWeight()) + " lbs.");
+        calsLbl.setText(Integer.toString(log.getTotalCalories()));
+        expendedLbl.setText(Double.toString(log.getTotalCaloriesBurned()));
+        netLbl.setText(Double.toString(log.getNetCals()));
+
+        remove(consumedScrollPane);
+        consumedScrollPane = showFoodConsumed();
+        getContentPane().add(consumedScrollPane);
+
+        remove(exerciseScrollPanel);
+        exerciseScrollPanel = showExercisesLogged();
+        getContentPane().add(exerciseScrollPanel);
+
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+	
+	public void resetExercisePanel() {
+        timeTextField.setText("");
+        SwingUtilities.updateComponentTreeUI(this);
+    }
+	
+	public void resetLogPanel() {
+		foodQtyTextField.setText("");
+	}
+	
+	public void resetCaloriePanel() {
+		calorieTextField.setText("");
+	}
+	
+	public void resetWeightPanel() {
+		weightTextField.setText("");
+	}
+	
+	public void updatePanel() {
+        foodList = dietController.getFoodListKeys();
+        exerciseList = dietController.getExerciseNames();
+        removeAll();
+
+        SwingUtilities.updateComponentTreeUI(this);
     }
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jDateFood = new com.toedter.calendar.JDateChooser();
-        cmbFoods = new javax.swing.JComboBox<>();
-        quantitySpinner = new javax.swing.JSpinner();
-        btnAddNewFood = new javax.swing.JButton();
-        lblQuantity = new javax.swing.JLabel();
-        lblSelectFood = new javax.swing.JLabel();
-        lblDateFood = new javax.swing.JLabel();
-        lblLogFood = new javax.swing.JLabel();
-        btnSave = new javax.swing.JButton();
-        btnAddNewRecipe = new javax.swing.JButton();
-        lblLogWeight = new javax.swing.JLabel();
-        lblDateWeight = new javax.swing.JLabel();
-        jDateWeight = new com.toedter.calendar.JDateChooser();
-        textFieldWeight = new javax.swing.JTextField();
-        lblWeight = new javax.swing.JLabel();
-        btnViewLog = new javax.swing.JButton();
-        btnLogWeight = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        calDateLabel = new javax.swing.JLabel();
-        calLimitLabel = new javax.swing.JLabel();
-        jDateCalorieField = new com.toedter.calendar.JDateChooser();
-        calorieTextField = new javax.swing.JTextField();
-        logCalButton = new javax.swing.JButton();
-        lblHeader = new javax.swing.JLabel();
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(255, 255, 255));
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowActivated(java.awt.event.WindowEvent evt) {
-                formWindowActivated(evt);
-            }
-        });
-
-        jPanel1.setToolTipText("dsfrg");
-
-        jDateFood.setDateFormatString("yyyy MM d");
-
-        cmbFoods.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        cmbFoods.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cmbFoods.setMinimumSize(new java.awt.Dimension(72, 36));
-        cmbFoods.setPreferredSize(new java.awt.Dimension(72, 36));
-
-        quantitySpinner.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        quantitySpinner.setModel(new javax.swing.SpinnerNumberModel(0.0d, 0.0d, null, 0.5d));
-        quantitySpinner.setToolTipText("");
-        quantitySpinner.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-
-        btnAddNewFood.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        btnAddNewFood.setText("Add new food");
-        btnAddNewFood.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddNewFood.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddNewFoodActionPerformed(evt);
-            }
-        });
-
-        lblQuantity.setFont(new java.awt.Font("Lucida Grande", 0, 30)); // NOI18N
-        lblQuantity.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblQuantity.setText("Quantity:");
-
-        lblSelectFood.setFont(new java.awt.Font("Lucida Grande", 0, 30)); // NOI18N
-        lblSelectFood.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblSelectFood.setText("Select food:");
-
-        lblDateFood.setFont(new java.awt.Font("Lucida Grande", 0, 30)); // NOI18N
-        lblDateFood.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblDateFood.setText("Select date:");
-
-        lblLogFood.setFont(new java.awt.Font("Lucida Grande", 1, 35)); // NOI18N
-        lblLogFood.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLogFood.setText("LOG FOOD");
-        lblLogFood.setAlignmentX(0.5F);
-
-        btnSave.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        btnSave.setText("Log");
-        btnSave.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnSave.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnSaveActionPerformed(evt);
-            }
-        });
-
-        btnAddNewRecipe.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        btnAddNewRecipe.setText("Add new recipe");
-        btnAddNewRecipe.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnAddNewRecipe.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddNewRecipeActionPerformed(evt);
-            }
-        });
-
-        lblLogWeight.setFont(new java.awt.Font("Lucida Grande", 1, 35)); // NOI18N
-        lblLogWeight.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblLogWeight.setText("LOG WEIGHT");
-        lblLogWeight.setAlignmentX(0.5F);
-
-        lblDateWeight.setFont(new java.awt.Font("Lucida Grande", 0, 30)); // NOI18N
-        lblDateWeight.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblDateWeight.setText("Select date:");
-
-        jDateWeight.setDateFormatString("yyyy MM d");
-
-        textFieldWeight.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        textFieldWeight.setText("Enter your weight");
-        textFieldWeight.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                textFieldWeightFocusGained(evt);
-            }
-        });
-
-        lblWeight.setFont(new java.awt.Font("Lucida Grande", 0, 30)); // NOI18N
-        lblWeight.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblWeight.setText("Weight:");
-        lblWeight.setToolTipText("");
-
-        btnViewLog.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        btnViewLog.setText("View Log");
-        btnViewLog.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        btnViewLog.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnViewLogActionPerformed(evt);
-            }
-        });
-
-        btnLogWeight.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        btnLogWeight.setText("Log Weight");
-        btnLogWeight.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnLogWeightActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Lucida Grande", 1, 35)); // NOI18N
-        jLabel1.setText("LOG CALORIES LIMIT");
-
-        calDateLabel.setFont(new java.awt.Font("Lucida Grande", 0, 30)); // NOI18N
-        calDateLabel.setText("Select date:");
-
-        calLimitLabel.setFont(new java.awt.Font("Lucida Grande", 0, 30)); // NOI18N
-        calLimitLabel.setText("Calorie limit:");
-
-        jDateCalorieField.setDateFormatString("yyyy MM dd");
-
-        calorieTextField.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        calorieTextField.setText("Enter your calories limit");
-        calorieTextField.setToolTipText("");
-        calorieTextField.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                calorieTextFieldFocusGained(evt);
-            }
-        });
-
-        logCalButton.setFont(new java.awt.Font("Lucida Grande", 0, 20)); // NOI18N
-        logCalButton.setText("Log Calories");
-        logCalButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                logCalButtonActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(lblLogFood, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(26, 26, 26)
-                        .addComponent(lblDateFood, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jDateFood, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblDateWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lblWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jDateWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(textFieldWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(lblQuantity, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 292, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addComponent(lblSelectFood, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(btnSave, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(20, 20, 20)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(cmbFoods, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(quantitySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 249, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAddNewRecipe, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnAddNewFood, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(143, 143, 143))
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(136, 136, 136)
-                .addComponent(btnLogWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(logCalButton)
-                .addGap(136, 136, 136))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(lblLogWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 392, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(calDateLabel)
-                            .addComponent(calLimitLabel))
-                        .addGap(24, 24, 24)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(calorieTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jDateCalorieField, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(19, 19, 19)
-                        .addComponent(jLabel1)))
-                .addGap(35, 35, 35))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnViewLog, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(438, 438, 438))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(80, 80, 80)
-                .addComponent(lblLogFood, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(cmbFoods, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblSelectFood)
-                    .addComponent(btnAddNewFood))
-                .addGap(1, 1, 1)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(quantitySpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblQuantity))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblDateFood)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(btnAddNewRecipe)
-                        .addComponent(jDateFood, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(btnSave)
-                .addGap(47, 47, 47)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblLogWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1))
-                .addGap(24, 24, 24)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblDateWeight)
-                    .addComponent(calDateLabel)
-                    .addComponent(jDateWeight, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateCalorieField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblWeight)
-                    .addComponent(calLimitLabel)
-                    .addComponent(calorieTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(textFieldWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(31, 31, 31)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnLogWeight)
-                    .addComponent(logCalButton))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
-                .addComponent(btnViewLog)
-                .addGap(26, 26, 26))
-        );
-
-        jDateFood.getAccessibleContext().setAccessibleName("foodDateBox");
-        cmbFoods.getAccessibleContext().setAccessibleName("foodMenu");
-        quantitySpinner.getAccessibleContext().setAccessibleName("foodQuantity");
-        btnAddNewFood.getAccessibleContext().setAccessibleName("newFoodButton");
-        lblQuantity.getAccessibleContext().setAccessibleName("foodQuantityLabel");
-        lblSelectFood.getAccessibleContext().setAccessibleName("selectFoodLabel");
-        lblDateFood.getAccessibleContext().setAccessibleName("dailyDateLabel");
-        lblLogFood.getAccessibleContext().setAccessibleName("logFoodLabel");
-        btnSave.getAccessibleContext().setAccessibleName("dailyLogButton");
-        btnAddNewRecipe.getAccessibleContext().setAccessibleName("newRecipeButton");
-        lblLogWeight.getAccessibleContext().setAccessibleName("logWeightLabel");
-        lblDateWeight.getAccessibleContext().setAccessibleName("weightDateLabel");
-        jDateWeight.getAccessibleContext().setAccessibleName("weightDateBox");
-        textFieldWeight.getAccessibleContext().setAccessibleName("weightTextField");
-        lblWeight.getAccessibleContext().setAccessibleName("weightLabel");
-        btnViewLog.getAccessibleContext().setAccessibleName("viewLogButton");
-        btnLogWeight.getAccessibleContext().setAccessibleName("logWeightButton");
-
-        lblHeader.setFont(new java.awt.Font("Lucida Grande", 0, 50)); // NOI18N
-        lblHeader.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblHeader.setText("DIET MANAGER");
-        lblHeader.setAlignmentX(0.5F);
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-            .addGroup(layout.createSequentialGroup()
-                .addGap(22, 22, 22)
-                .addComponent(lblHeader, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(18, 18, 18)
-                .addComponent(lblHeader, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
-        );
-
-        jPanel1.getAccessibleContext().setAccessibleDescription("");
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void btnViewLogActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewLogActionPerformed
-
-    }//GEN-LAST:event_btnViewLogActionPerformed
-
-
-    private void btnAddNewRecipeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNewRecipeActionPerformed
-
-    }//GEN-LAST:event_btnAddNewRecipeActionPerformed
-
-    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
-
-    }//GEN-LAST:event_btnSaveActionPerformed
-
-    private void btnAddNewFoodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddNewFoodActionPerformed
-
-    }//GEN-LAST:event_btnAddNewFoodActionPerformed
-
-    private void logCalButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_logCalButtonActionPerformed
-
-    }//GEN-LAST:event_logCalButtonActionPerformed
-
-    private void btnLogWeightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogWeightActionPerformed
-
-    }//GEN-LAST:event_btnLogWeightActionPerformed
-
-    private void formWindowActivated(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowActivated
-
-    }//GEN-LAST:event_formWindowActivated
-
-    private void textFieldWeightFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_textFieldWeightFocusGained
-
-    }//GEN-LAST:event_textFieldWeightFocusGained
-
-    private void calorieTextFieldFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_calorieTextFieldFocusGained
-
-    }//GEN-LAST:event_calorieTextFieldFocusGained
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) throws IOException {
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> {
-            new GUIComponent().setVisible(true);
-        });
-    }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton btnAddNewFood;
-    public javax.swing.JButton btnAddNewRecipe;
-    public javax.swing.JButton btnLogWeight;
-    public javax.swing.JButton btnSave;
-    private javax.swing.JButton btnViewLog;
-    private javax.swing.JLabel calDateLabel;
-    private javax.swing.JLabel calLimitLabel;
-    public javax.swing.JTextField calorieTextField;
-    public javax.swing.JComboBox<String> cmbFoods;
-    public com.toedter.calendar.JDateChooser jDateCalorieField;
-    public com.toedter.calendar.JDateChooser jDateFood;
-    public com.toedter.calendar.JDateChooser jDateWeight;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel lblDateFood;
-    private javax.swing.JLabel lblDateWeight;
-    private javax.swing.JLabel lblHeader;
-    private javax.swing.JLabel lblLogFood;
-    private javax.swing.JLabel lblLogWeight;
-    private javax.swing.JLabel lblQuantity;
-    private javax.swing.JLabel lblSelectFood;
-    private javax.swing.JLabel lblWeight;
-    public javax.swing.JButton logCalButton;
-    public javax.swing.JSpinner quantitySpinner;
-    public javax.swing.JTextField textFieldWeight;
-    // End of variables declaration//GEN-END:variables
+	}
 }

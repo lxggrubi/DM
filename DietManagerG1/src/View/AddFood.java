@@ -1,224 +1,130 @@
-package View;
+package view;
+import javax.swing.*;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-/**
- *
- * @author lehadysani-agatha
- */
-public class AddFood extends javax.swing.JFrame {
+import controller.DietController;
 
-    private static final String COMMA_DELIMITER = ",";
-    private static final String NEW_LINE_SEPARATOR = "\n";
+import java.awt.event.ActionListener;
+import java.util.Set;
+import java.awt.event.ActionEvent;
 
-    /**
-     * Creates new form AddFood
-     */
-    public AddFood() {
-        initComponents();
-        this.setLocationRelativeTo(null);
-    }
+public class AddFood extends JFrame {
+	
+	private DietController dietController;
+    private ViewMediator viewMediator;
+	private JTextField nameTextField;
+	private JTextField calTextField;
+	private JTextField fatsTextField;
+	private JTextField carbsTextField;
+	private JTextField proteinsTextField;
+	private Set<String> foodList;
+	
+	public AddFood(DietController dietController, ViewMediator viewMediator) {
+		
+		this.dietController = dietController;
+        this.viewMediator = viewMediator;
+        foodList = dietController.getFoodListKeys();
+		
+		buildGUI();
+	}
+	
+	public void buildGUI() {
+		SpringLayout springLayout = new SpringLayout();
+		getContentPane().setLayout(springLayout);
+		
+		JLabel lblNameOfFood = new JLabel("Name of food:");
+		springLayout.putConstraint(SpringLayout.NORTH, lblNameOfFood, 47, SpringLayout.NORTH, getContentPane());
+		getContentPane().add(lblNameOfFood);
+		
+		JLabel lblCalories = new JLabel("Calories:");
+		springLayout.putConstraint(SpringLayout.NORTH, lblCalories, 24, SpringLayout.SOUTH, lblNameOfFood);
+		springLayout.putConstraint(SpringLayout.EAST, lblNameOfFood, 0, SpringLayout.EAST, lblCalories);
+		springLayout.putConstraint(SpringLayout.WEST, lblCalories, 99, SpringLayout.WEST, getContentPane());
+		getContentPane().add(lblCalories);
+		
+		JLabel lblFats = new JLabel("Fats:");
+		springLayout.putConstraint(SpringLayout.EAST, lblFats, 0, SpringLayout.EAST, lblNameOfFood);
+		getContentPane().add(lblFats);
+		
+		JLabel lblCarbs = new JLabel("Carbs:");
+		springLayout.putConstraint(SpringLayout.EAST, lblCarbs, 0, SpringLayout.EAST, lblNameOfFood);
+		getContentPane().add(lblCarbs);
+		
+		JLabel lblProteins = new JLabel("Proteins:");
+		springLayout.putConstraint(SpringLayout.EAST, lblProteins, 0, SpringLayout.EAST, lblNameOfFood);
+		getContentPane().add(lblProteins);
+		
+		nameTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.NORTH, nameTextField, -5, SpringLayout.NORTH, lblNameOfFood);
+		springLayout.putConstraint(SpringLayout.WEST, nameTextField, 6, SpringLayout.EAST, lblNameOfFood);
+		getContentPane().add(nameTextField);
+		nameTextField.setColumns(10);
+		
+		calTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.NORTH, calTextField, -5, SpringLayout.NORTH, lblCalories);
+		springLayout.putConstraint(SpringLayout.WEST, calTextField, 6, SpringLayout.EAST, lblCalories);
+		getContentPane().add(calTextField);
+		calTextField.setColumns(10);
+		
+		fatsTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.NORTH, fatsTextField, 16, SpringLayout.SOUTH, calTextField);
+		springLayout.putConstraint(SpringLayout.WEST, fatsTextField, 6, SpringLayout.EAST, lblFats);
+		springLayout.putConstraint(SpringLayout.NORTH, lblFats, 5, SpringLayout.NORTH, fatsTextField);
+		getContentPane().add(fatsTextField);
+		fatsTextField.setColumns(10);
+		
+		carbsTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.WEST, carbsTextField, 6, SpringLayout.EAST, lblCarbs);
+		springLayout.putConstraint(SpringLayout.NORTH, lblCarbs, 5, SpringLayout.NORTH, carbsTextField);
+		springLayout.putConstraint(SpringLayout.NORTH, carbsTextField, 20, SpringLayout.SOUTH, fatsTextField);
+		getContentPane().add(carbsTextField);
+		carbsTextField.setColumns(10);
+		
+		proteinsTextField = new JTextField();
+		springLayout.putConstraint(SpringLayout.WEST, proteinsTextField, 6, SpringLayout.EAST, lblProteins);
+		springLayout.putConstraint(SpringLayout.NORTH, lblProteins, 5, SpringLayout.NORTH, proteinsTextField);
+		springLayout.putConstraint(SpringLayout.NORTH, proteinsTextField, 19, SpringLayout.SOUTH, carbsTextField);
+		getContentPane().add(proteinsTextField);
+		proteinsTextField.setColumns(10);
+		
+		JButton btnAddFood = new JButton("Add Food");
+		btnAddFood.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+                    String foodName = nameTextField.getText();
+                    dietController.addBasicFood(foodName,
+                        Integer.parseInt(calTextField.getText()),
+                        Double.parseDouble(carbsTextField.getText()),
+                        Double.parseDouble(proteinsTextField.getText()),
+                        Double.parseDouble(fatsTextField.getText()));
+                    resetPanel();
+                    viewMediator.updatePanel();
+                    JOptionPane.showMessageDialog(null,
+                            "Food successfully added: " + foodName);
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null,
+                        "Food failed to add. Please ensure all values are valid.");
+                }
+			}
+		});
+		springLayout.putConstraint(SpringLayout.NORTH, btnAddFood, 30, SpringLayout.SOUTH, proteinsTextField);
+		springLayout.putConstraint(SpringLayout.EAST, btnAddFood, -164, SpringLayout.EAST, getContentPane());
+		getContentPane().add(btnAddFood);
+		
+		JButton btnCancel = new JButton("Cancel");
+		springLayout.putConstraint(SpringLayout.NORTH, btnCancel, 6, SpringLayout.SOUTH, btnAddFood);
+		springLayout.putConstraint(SpringLayout.EAST, btnCancel, -164, SpringLayout.EAST, getContentPane());
+		getContentPane().add(btnCancel);
+	}
+	
+	 public void resetPanel() {
+	        foodList = dietController.getFoodListKeys();
 
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+	        nameTextField.setText("");
+	        calTextField.setText("");
+	        fatsTextField.setText("");
+	        carbsTextField.setText("");
+	        proteinsTextField.setText("");
+	        SwingUtilities.updateComponentTreeUI(this);
+	 }
 
-        jPanel1 = new javax.swing.JPanel();
-        txtNames = new javax.swing.JTextField();
-        txtCalories = new javax.swing.JTextField();
-        txtFats = new javax.swing.JTextField();
-        txtCarbs = new javax.swing.JTextField();
-        txtProteins = new javax.swing.JTextField();
-        lblName = new javax.swing.JLabel();
-        lblCalories = new javax.swing.JLabel();
-        lblFat = new javax.swing.JLabel();
-        lblProteins = new javax.swing.JLabel();
-        lblCarbs = new javax.swing.JLabel();
-        btnAddFood = new javax.swing.JButton();
-        btnCancel = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
-
-        txtNames.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtNames.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
-        txtNames.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtNamesActionPerformed(evt);
-            }
-        });
-
-        txtCalories.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        txtFats.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtFats.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtFatsActionPerformed(evt);
-            }
-        });
-
-        txtCarbs.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        txtCarbs.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCarbsActionPerformed(evt);
-            }
-        });
-
-        txtProteins.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-
-        lblName.setText("Name:");
-
-        lblCalories.setText("Calories:");
-
-        lblFat.setText("Fat:");
-
-        lblProteins.setText("Proteins:");
-
-        lblCarbs.setText("Carbs:");
-
-        btnAddFood.setText("Add Food");
-        btnAddFood.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddFoodActionPerformed(evt);
-            }
-        });
-
-        btnCancel.setText("Cancel");
-        btnCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnCancelActionPerformed(evt);
-            }
-        });
-
-        jButton1.setText("Check");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(50, 50, 50)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lblCalories)
-                    .addComponent(lblFat)
-                    .addComponent(lblProteins)
-                    .addComponent(lblCarbs)
-                    .addComponent(lblName))
-                .addGap(46, 46, 46)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtNames, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(txtCalories, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                            .addComponent(txtFats)
-                            .addComponent(txtCarbs)
-                            .addComponent(btnCancel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnAddFood, javax.swing.GroupLayout.DEFAULT_SIZE, 92, Short.MAX_VALUE)
-                            .addComponent(txtProteins))
-                        .addGap(38, 38, 38)
-                        .addComponent(jButton1)))
-                .addContainerGap(53, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtNames, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblName))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtCalories, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblCalories))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(txtFats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lblFat))
-                .addGap(8, 8, 8)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblCarbs)
-                    .addComponent(txtCarbs, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(lblProteins)
-                    .addComponent(txtProteins, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnAddFood)
-                    .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnCancel)
-                .addContainerGap(22, Short.MAX_VALUE))
-        );
-
-        jButton1.getAccessibleContext().setAccessibleName("check");
-        jButton1.getAccessibleContext().setAccessibleDescription("");
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void txtNamesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNamesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtNamesActionPerformed
-
-    private void txtCarbsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCarbsActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtCarbsActionPerformed
-
-    private void txtFatsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFatsActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtFatsActionPerformed
-
-    private void btnAddFoodActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddFoodActionPerformed
-        
-    }//GEN-LAST:event_btnAddFoodActionPerformed
-
-    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
-        // TODO add your handling code here:
-        this.dispose();
-    }//GEN-LAST:event_btnCancelActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    public javax.swing.JButton btnAddFood;
-    public javax.swing.JButton btnCancel;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel lblCalories;
-    private javax.swing.JLabel lblCarbs;
-    private javax.swing.JLabel lblFat;
-    private javax.swing.JLabel lblName;
-    private javax.swing.JLabel lblProteins;
-    public javax.swing.JTextField txtCalories;
-    public javax.swing.JTextField txtCarbs;
-    public javax.swing.JTextField txtFats;
-    public javax.swing.JTextField txtNames;
-    public javax.swing.JTextField txtProteins;
-    // End of variables declaration//GEN-END:variables
 }
