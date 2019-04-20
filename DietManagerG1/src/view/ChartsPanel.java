@@ -8,13 +8,11 @@ import javax.swing.border.TitledBorder;
 public class ChartsPanel extends JPanel {
 
     DietController dietController;
-    ViewMediator viewMediator;
     //BarGraph barValues;
 
-    public ChartsPanel(DietController dietController, ViewMediator viewMediator) {
+    public ChartsPanel(DietController dietController) {
 
         this.dietController = dietController;
-        this.viewMediator = viewMediator;
 
         //barValues = new BarGraph(dietController.getDesiredDietLog(dietController.getCurrentDate()));
         //add(barValues);

@@ -14,11 +14,9 @@ import java.util.Scanner;
 public class DietView {
 
     DietController dc;
-    ViewMediator viewMediator;
 
     public DietView() {
         dc = new DietController();
-        viewMediator = new ViewMediator();
-        GUIComponent GUI = new GUIComponent(dc, viewMediator);
+        GUIComponent GUI = new GUIComponent(dc);
     }
 }

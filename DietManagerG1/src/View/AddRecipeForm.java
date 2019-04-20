@@ -15,7 +15,6 @@ import java.awt.event.ActionEvent;
 public class AddRecipeForm extends JFrame {
 	
 	private DietController dietController;
-    private ViewMediator viewMediator;
     private Set<String> foodList;
     private JTextField qtyTextField;
     private JTextField recipeNameTextField;
@@ -23,10 +22,9 @@ public class AddRecipeForm extends JFrame {
     JPanel recipePanel;
     JPanel mainPanel;
 	
-	public AddRecipeForm(DietController dietController, ViewMediator viewMediator) {
+	public AddRecipeForm(DietController dietController) {
 		
 		this.dietController = dietController;
-        this.viewMediator = viewMediator;
 
         foodList = dietController.getFoodListKeys();
 		
@@ -72,7 +70,6 @@ public class AddRecipeForm extends JFrame {
         }
         dietController.addRecipe(recipeNameTextField.getText(),recipeList,servingList);
         resetPanel();
-        viewMediator.updatePanel();
     }
 	
 	public void resetPanel() {

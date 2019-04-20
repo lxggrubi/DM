@@ -10,7 +10,6 @@ import java.awt.event.ActionEvent;
 public class AddFood extends JFrame {
 	
 	private DietController dietController;
-    private ViewMediator viewMediator;
 	private JTextField nameTextField;
 	private JTextField calTextField;
 	private JTextField fatsTextField;
@@ -18,10 +17,9 @@ public class AddFood extends JFrame {
 	private JTextField proteinsTextField;
 	private Set<String> foodList;
 	
-	public AddFood(DietController dietController, ViewMediator viewMediator) {
+	public AddFood(DietController dietController) {
 		
 		this.dietController = dietController;
-        this.viewMediator = viewMediator;
         foodList = dietController.getFoodListKeys();
 		
 		buildGUI();
@@ -97,7 +95,6 @@ public class AddFood extends JFrame {
                         Double.parseDouble(proteinsTextField.getText()),
                         Double.parseDouble(fatsTextField.getText()));
                     resetPanel();
-                    viewMediator.updatePanel();
                     JOptionPane.showMessageDialog(null,
                             "Food successfully added: " + foodName);
                 } catch (Exception ex) {
@@ -114,6 +111,9 @@ public class AddFood extends JFrame {
 		springLayout.putConstraint(SpringLayout.NORTH, btnCancel, 6, SpringLayout.SOUTH, btnAddFood);
 		springLayout.putConstraint(SpringLayout.EAST, btnCancel, -164, SpringLayout.EAST, getContentPane());
 		getContentPane().add(btnCancel);
+                
+                setVisible(true);
+                pack();
 	}
 	
 	 public void resetPanel() {

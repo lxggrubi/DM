@@ -13,12 +13,10 @@ public class AddExerciseForm extends JFrame {
 	private JTextField exerciseTextField;
 	private JTextField calsTextField;
 	private DietController dietController;
-    private ViewMediator viewMediator;
 
-	public AddExerciseForm(DietController dietController, ViewMediator viewMediator) {
+	public AddExerciseForm(DietController dietController) {
 		
 		this.dietController = dietController;
-        this.viewMediator = viewMediator;
 		
 		SpringLayout springLayout = new SpringLayout();
 		getContentPane().setLayout(springLayout);
@@ -46,7 +44,6 @@ public class AddExerciseForm extends JFrame {
                     String exerciseName = exerciseTextField.getText();
                     dietController.addExercise(exerciseName, Double.parseDouble(calsTextField.getText()));
                     resetPanel();
-                    viewMediator.updatePanel();
                     JOptionPane.showMessageDialog(null,
                             "Exercise successfully added: " + exerciseName);
                 } catch (Exception ex) {

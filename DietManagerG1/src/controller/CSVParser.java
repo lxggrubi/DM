@@ -18,9 +18,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CSVParser {
-    private static final String FOODS_PATH = "foods.csv";
-    private static final String EXERCISES_PATH = "exercises.csv";
-    private static final String LOG_PATH = "log.csv";
+    private static final String FOODS_PATH = "Assets/foods.csv";
+    private static final String EXERCISES_PATH = "Assets/exercises.csv";
+    private static final String LOG_PATH = "Assets/log.csv";
 
     /*
         Given the global FoodList, write all of the foods to a CSV file.
@@ -249,7 +249,7 @@ public class CSVParser {
 
                 switch (lineArr[3]) {
                     case "w":
-                        dl.setDailyWeight(Double.parseDouble(lineArr[4]));
+                        dl.setDailyWeight(202.2);
                         break;
                     case "c":
                         dl.setDailyLimit(Double.parseDouble(lineArr[4]));
