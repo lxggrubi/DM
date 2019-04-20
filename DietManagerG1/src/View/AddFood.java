@@ -2,6 +2,7 @@ package view;
 import javax.swing.*;
 
 import controller.DietController;
+import java.awt.Dimension;
 
 import java.awt.event.ActionListener;
 import java.util.Set;
@@ -19,10 +20,9 @@ public class AddFood extends JFrame {
 	
 	public AddFood(DietController dietController) {
 		
-		this.dietController = dietController;
-        foodList = dietController.getFoodListKeys();
-		
-		buildGUI();
+            this.dietController = dietController;
+            foodList = dietController.getFoodListKeys();		
+            buildGUI();
 	}
 	
 	public void buildGUI() {
@@ -112,8 +112,9 @@ public class AddFood extends JFrame {
 		springLayout.putConstraint(SpringLayout.EAST, btnCancel, -164, SpringLayout.EAST, getContentPane());
 		getContentPane().add(btnCancel);
                 
-                setVisible(true);
-                pack();
+                this.setPreferredSize(new Dimension(450, 500));
+                this.pack();
+                this.setVisible(true);
 	}
 	
 	 public void resetPanel() {

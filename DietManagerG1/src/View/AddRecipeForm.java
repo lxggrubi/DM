@@ -155,5 +155,9 @@ public class AddRecipeForm extends JFrame {
 		ingredientPanel = new JPanel();
 		recipePanel.add(ingredientPanel);
 		ingredientPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+                
+                this.setPreferredSize(new Dimension(450, 500));
+                this.pack();
+                this.setVisible(true);
 	}
 }
