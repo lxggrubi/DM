@@ -1,4 +1,5 @@
 package view;
+
 import java.util.ArrayList;
 import java.util.Set;
 
@@ -13,26 +14,26 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
 public class AddRecipeForm extends JFrame {
-	
-	private DietController dietController;
+
+    private DietController dietController;
     private Set<String> foodList;
     private JTextField qtyTextField;
     private JTextField recipeNameTextField;
-    
+
     JPanel recipePanel;
     JPanel mainPanel;
-	
-	public AddRecipeForm(DietController dietController) {
-		
-		this.dietController = dietController;
+
+    public AddRecipeForm(DietController dietController) {
+
+        this.dietController = dietController;
 
         foodList = dietController.getFoodListKeys();
-		
-		buildGUI();
-	}
-	
-	public JPanel addIngredientPanel() {
-            
+
+        buildGUI();
+    }
+
+    public JPanel addIngredientPanel() {
+
         JPanel ingredientPanel = new JPanel();
         ingredientPanel.setLayout(new FlowLayout());
 
@@ -60,24 +61,24 @@ public class AddRecipeForm extends JFrame {
         recipePanel.add(ingredientPanel);
         recipePanel.updateUI();
         return ingredientPanel;
-	}
-	
-	private void addRecipe() {
+    }
+
+    private void addRecipe() {
         ArrayList<String> recipeList = new ArrayList<String>();
         ArrayList<String> servingList = new ArrayList<String>();
         for (Component panel : recipePanel.getComponents()) {
-            JPanel innerPanel = (JPanel)panel;
-                    
+            JPanel innerPanel = (JPanel) panel;
+
             System.out.println("Number of panels = " + panel.getName());
-            
-            recipeList.add(((JComboBox)innerPanel.getComponent(1)).getSelectedItem().toString());
-            servingList.add(((JTextField)innerPanel.getComponent(3)).getText());
+
+            recipeList.add(((JComboBox) innerPanel.getComponent(1)).getSelectedItem().toString());
+            servingList.add(((JTextField) innerPanel.getComponent(3)).getText());
         }
-        dietController.addRecipe(recipeNameTextField.getText(),recipeList,servingList);
+        dietController.addRecipe(recipeNameTextField.getText(), recipeList, servingList);
         resetPanel();
     }
-	
-	public void resetPanel() {
+
+    public void resetPanel() {
         foodList = dietController.getFoodListKeys();
 
         recipePanel.removeAll();
@@ -85,81 +86,77 @@ public class AddRecipeForm extends JFrame {
         addIngredientPanel();
         SwingUtilities.updateComponentTreeUI(this);
     }
-	
-	public void buildGUI() {
-		
-		mainPanel = new JPanel();
-                recipePanel = new JPanel();
-		SpringLayout springLayout = new SpringLayout();
-		getContentPane().setLayout(springLayout);
-		
-		JLabel lblAddNewRecipe = new JLabel("Add New Recipe");
-		springLayout.putConstraint(SpringLayout.NORTH, lblAddNewRecipe, 5, SpringLayout.NORTH, getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, lblAddNewRecipe, -72, SpringLayout.EAST, getContentPane());
-		lblAddNewRecipe.setFont(new Font("Lucida Grande", Font.BOLD, 35));
-		getContentPane().add(lblAddNewRecipe);
-		
-		JLabel lblRecipeName = new JLabel("Recipe Name:");
-		springLayout.putConstraint(SpringLayout.WEST, lblRecipeName, 77, SpringLayout.WEST, getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, lblRecipeName, -377, SpringLayout.SOUTH, getContentPane());
-		getContentPane().add(lblRecipeName);
-		
-		JButton addMoreButton = new JButton("+");
-		springLayout.putConstraint(SpringLayout.WEST, addMoreButton, 187, SpringLayout.WEST, getContentPane());
-		addMoreButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				addIngredientPanel();
-			}
-		});
-		getContentPane().add(addMoreButton);
-		
-		JButton btnAddNewRecipe = new JButton("Add New Recipe");
-		springLayout.putConstraint(SpringLayout.SOUTH, addMoreButton, -6, SpringLayout.NORTH, btnAddNewRecipe);
-		springLayout.putConstraint(SpringLayout.WEST, btnAddNewRecipe, 148, SpringLayout.WEST, getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewRecipe, -10, SpringLayout.SOUTH, getContentPane());
-		btnAddNewRecipe.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				String recipeName = recipeNameTextField.getText();
-                try {
-                    addRecipe();
-                    JOptionPane.showMessageDialog(null,
-                            "Recipe successfully added: " + recipeName);
-                } catch (Exception ex) {
-                            ex.printStackTrace();
-                }
 
-			}
-		});
-		getContentPane().add(btnAddNewRecipe);
-		
-		recipeNameTextField = new JTextField();
-		springLayout.putConstraint(SpringLayout.NORTH, recipeNameTextField, -5, SpringLayout.NORTH, lblRecipeName);
-		springLayout.putConstraint(SpringLayout.WEST, recipeNameTextField, 57, SpringLayout.EAST, lblRecipeName);
-		springLayout.putConstraint(SpringLayout.EAST, recipeNameTextField, -104, SpringLayout.EAST, getContentPane());
-		getContentPane().add(recipeNameTextField);
-		recipeNameTextField.setColumns(10);
-		
-		JScrollPane recipeScrollPane = new JScrollPane();
-		springLayout.putConstraint(SpringLayout.NORTH, recipeScrollPane, 6, SpringLayout.SOUTH, recipeNameTextField);
-		springLayout.putConstraint(SpringLayout.WEST, recipeScrollPane, 10, SpringLayout.WEST, getContentPane());
-		springLayout.putConstraint(SpringLayout.SOUTH, recipeScrollPane, -6, SpringLayout.NORTH, addMoreButton);
-		springLayout.putConstraint(SpringLayout.EAST, recipeScrollPane, 0, SpringLayout.EAST, getContentPane());
-		getContentPane().add(recipeScrollPane);
-		
-		qtyTextField = new JTextField();
-		springLayout.putConstraint(SpringLayout.NORTH, qtyTextField, 99, SpringLayout.NORTH, getContentPane());
-		springLayout.putConstraint(SpringLayout.WEST, qtyTextField, 428, SpringLayout.WEST, getContentPane());
-		springLayout.putConstraint(SpringLayout.EAST, qtyTextField, 0, SpringLayout.EAST, addMoreButton);
-		getContentPane().add(qtyTextField);
-		qtyTextField.setColumns(2);
-		
-		
-		recipeScrollPane.setViewportView(recipePanel);
-		recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.PAGE_AXIS));
-		
-                
-                this.setPreferredSize(new Dimension(450, 500));
-                this.pack();
-                this.setVisible(true);
-	}
+    public void buildGUI() {
+
+        mainPanel = new JPanel();
+        recipePanel = new JPanel();
+        SpringLayout springLayout = new SpringLayout();
+        getContentPane().setLayout(springLayout);
+
+        JLabel lblAddNewRecipe = new JLabel("Add New Recipe");
+        springLayout.putConstraint(SpringLayout.NORTH, lblAddNewRecipe, 5, SpringLayout.NORTH, getContentPane());
+        springLayout.putConstraint(SpringLayout.EAST, lblAddNewRecipe, -72, SpringLayout.EAST, getContentPane());
+        lblAddNewRecipe.setFont(new Font("Lucida Grande", Font.BOLD, 35));
+        getContentPane().add(lblAddNewRecipe);
+
+        JLabel lblRecipeName = new JLabel("Recipe Name:");
+        springLayout.putConstraint(SpringLayout.WEST, lblRecipeName, 77, SpringLayout.WEST, getContentPane());
+        springLayout.putConstraint(SpringLayout.SOUTH, lblRecipeName, -377, SpringLayout.SOUTH, getContentPane());
+        getContentPane().add(lblRecipeName);
+
+        JButton addMoreButton = new JButton("+");
+        springLayout.putConstraint(SpringLayout.WEST, addMoreButton, 187, SpringLayout.WEST, getContentPane());
+        addMoreButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                addIngredientPanel();
+            }
+        });
+        getContentPane().add(addMoreButton);
+
+        JButton btnAddNewRecipe = new JButton("Add New Recipe");
+        springLayout.putConstraint(SpringLayout.SOUTH, addMoreButton, -6, SpringLayout.NORTH, btnAddNewRecipe);
+        springLayout.putConstraint(SpringLayout.WEST, btnAddNewRecipe, 148, SpringLayout.WEST, getContentPane());
+        springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewRecipe, -10, SpringLayout.SOUTH, getContentPane());
+        btnAddNewRecipe.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String recipeName = recipeNameTextField.getText();
+                if (!recipeName.equals("") && recipePanel.getComponents().length > 0) {
+                    addRecipe();
+                    JOptionPane.showMessageDialog(null, "Recipe " + recipeName + " successfully added.");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Please enter a name of recipe and at least one food.");
+                }
+            }
+        });
+        getContentPane().add(btnAddNewRecipe);
+
+        recipeNameTextField = new JTextField();
+        springLayout.putConstraint(SpringLayout.NORTH, recipeNameTextField, -5, SpringLayout.NORTH, lblRecipeName);
+        springLayout.putConstraint(SpringLayout.WEST, recipeNameTextField, 57, SpringLayout.EAST, lblRecipeName);
+        springLayout.putConstraint(SpringLayout.EAST, recipeNameTextField, -104, SpringLayout.EAST, getContentPane());
+        getContentPane().add(recipeNameTextField);
+        recipeNameTextField.setColumns(10);
+
+        JScrollPane recipeScrollPane = new JScrollPane();
+        springLayout.putConstraint(SpringLayout.NORTH, recipeScrollPane, 6, SpringLayout.SOUTH, recipeNameTextField);
+        springLayout.putConstraint(SpringLayout.WEST, recipeScrollPane, 10, SpringLayout.WEST, getContentPane());
+        springLayout.putConstraint(SpringLayout.SOUTH, recipeScrollPane, -6, SpringLayout.NORTH, addMoreButton);
+        springLayout.putConstraint(SpringLayout.EAST, recipeScrollPane, 0, SpringLayout.EAST, getContentPane());
+        getContentPane().add(recipeScrollPane);
+
+        qtyTextField = new JTextField();
+        springLayout.putConstraint(SpringLayout.NORTH, qtyTextField, 99, SpringLayout.NORTH, getContentPane());
+        springLayout.putConstraint(SpringLayout.WEST, qtyTextField, 428, SpringLayout.WEST, getContentPane());
+        springLayout.putConstraint(SpringLayout.EAST, qtyTextField, 0, SpringLayout.EAST, addMoreButton);
+        getContentPane().add(qtyTextField);
+        qtyTextField.setColumns(2);
+
+        recipeScrollPane.setViewportView(recipePanel);
+        recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.PAGE_AXIS));
+
+        this.setPreferredSize(new Dimension(450, 500));
+        this.pack();
+        this.setVisible(true);
+    }
 }

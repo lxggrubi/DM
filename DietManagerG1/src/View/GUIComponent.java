@@ -127,7 +127,12 @@ public class GUIComponent extends JFrame implements ActionListener {
         JButton btnLogWeight = new JButton("Log Weight");
         btnLogWeight.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                dietController.setPersonalInfo(Double.parseDouble(weightTextField.getText()), dietController.getCurrentDate());
+                try {
+                    dietController.setPersonalInfo(Double.parseDouble(weightTextField.getText()), dietController.getCurrentDate());
+                    updateValues();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Wrong weight format. Please enter in double format.");
+                }
             }
         });
         springLayout.putConstraint(SpringLayout.NORTH, btnLogWeight, 6, SpringLayout.SOUTH, weightTextField);
@@ -183,11 +188,12 @@ public class GUIComponent extends JFrame implements ActionListener {
                             Double.parseDouble(foodQtyTextField.getText()),
                             dietController.getCurrentDate());
                     resetLogPanel();
+                    updateValues();
                     JOptionPane.showMessageDialog(null,
                             "Food successfully logged");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null,
-                            "Food failed to log, please ensure your serving value is valid.");
+                            "Food failed to log, please ensure your serving value is valid in double format.");
                 }
             }
         });
@@ -248,11 +254,12 @@ public class GUIComponent extends JFrame implements ActionListener {
                             Double.parseDouble(timeTextField.getText()),
                             dietController.getCurrentDate());
                     resetExercisePanel();
+                    updateValues();
                     JOptionPane.showMessageDialog(null,
                             "Exercise successfully logged");
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null,
-                            "Exercise failed to log, please ensure your time value is valid.");
+                            "Exercise failed to log, please ensure your exercise value is valid in double format.");
                 }
             }
         });
@@ -261,7 +268,7 @@ public class GUIComponent extends JFrame implements ActionListener {
         JLabel lblDate = new JLabel("Date:");
         lblDate.setFont(new Font("Lucida Grande", Font.PLAIN, 22));
         getContentPane().add(lblDate);
-        
+
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         Date date = new Date();
         dateTextField = new JTextField();
@@ -276,9 +283,12 @@ public class GUIComponent extends JFrame implements ActionListener {
         JButton btnChangeDate = new JButton("Change Date");
         springLayout.putConstraint(SpringLayout.NORTH, btnChangeDate, 17, SpringLayout.SOUTH, lblDietManager);
         btnChangeDate.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {                
+            public void actionPerformed(ActionEvent e) {
+                DateFormat df = new SimpleDateFormat("yyyy/mm/dd");
+
                 try {
-                    dietController.setCurrentDate(dateTextField.getText());
+                    df.setLenient(false);
+                    dietController.setCurrentDate(df.parse(dateTextField.getText()).toString());
                     updateValues();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null,
@@ -400,7 +410,7 @@ public class GUIComponent extends JFrame implements ActionListener {
         btnSubmit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dietController.setUserName(nameTextField.getText());
-                updateValues();                
+                updateValues();
                 //System.out.println("AsgGAS");
             }
         });
@@ -509,11 +519,10 @@ public class GUIComponent extends JFrame implements ActionListener {
         getContentPane().add(exerciseScrollPanel);
 
         SwingUtilities.updateComponentTreeUI(this);
-        
+
         consumedScrollPane.updateUI();
         exerciseScrollPanel.updateUI();
 
-     
     }
 
     public void resetExercisePanel() {
