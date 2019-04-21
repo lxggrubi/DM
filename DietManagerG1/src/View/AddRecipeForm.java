@@ -18,7 +18,7 @@ public class AddRecipeForm extends JFrame {
     private Set<String> foodList;
     private JTextField qtyTextField;
     private JTextField recipeNameTextField;
-    JPanel ingredientPanel;
+    
     JPanel recipePanel;
     JPanel mainPanel;
 	
@@ -32,6 +32,8 @@ public class AddRecipeForm extends JFrame {
 	}
 	
 	public JPanel addIngredientPanel() {
+            
+        JPanel ingredientPanel = new JPanel();
         ingredientPanel.setLayout(new FlowLayout());
 
         JLabel ingredientLabel = new JLabel("Food");
@@ -65,6 +67,9 @@ public class AddRecipeForm extends JFrame {
         ArrayList<String> servingList = new ArrayList<String>();
         for (Component panel : recipePanel.getComponents()) {
             JPanel innerPanel = (JPanel)panel;
+                    
+            System.out.println("Number of panels = " + panel.getName());
+            
             recipeList.add(((JComboBox)innerPanel.getComponent(1)).getSelectedItem().toString());
             servingList.add(((JTextField)innerPanel.getComponent(3)).getText());
         }
@@ -84,6 +89,7 @@ public class AddRecipeForm extends JFrame {
 	public void buildGUI() {
 		
 		mainPanel = new JPanel();
+                recipePanel = new JPanel();
 		SpringLayout springLayout = new SpringLayout();
 		getContentPane().setLayout(springLayout);
 		
@@ -119,8 +125,9 @@ public class AddRecipeForm extends JFrame {
                     JOptionPane.showMessageDialog(null,
                             "Recipe successfully added: " + recipeName);
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null,
-                            ex.getMessage());
+                    //JOptionPane.showMessageDialog(null,
+                            //ex);
+                            ex.printStackTrace();
                 }
 
 			}
@@ -148,13 +155,10 @@ public class AddRecipeForm extends JFrame {
 		getContentPane().add(qtyTextField);
 		qtyTextField.setColumns(2);
 		
-		recipePanel = new JPanel();
-		recipeScrollPane.setViewportView(recipePanel);
-		recipePanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
-		ingredientPanel = new JPanel();
-		recipePanel.add(ingredientPanel);
-		ingredientPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+		recipeScrollPane.setViewportView(recipePanel);
+		recipePanel.setLayout(new BoxLayout(recipePanel, BoxLayout.PAGE_AXIS));
+		
                 
                 this.setPreferredSize(new Dimension(450, 500));
                 this.pack();
