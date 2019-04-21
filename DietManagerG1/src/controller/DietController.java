@@ -106,9 +106,8 @@ public class DietController {
         return exerciseList.getAllExercises().keySet();
     }
 
-    public void setUserGoals(double calorieLimit, double weightLimit, String date) {
+    public void setUserGoals(double calorieLimit, String date) {
         user.setCaloricLimit(calorieLimit);
-        user.setDesiredWeight(weightLimit);
         user.updateLogCalorieLimit(calorieLimit, date);
     }
 

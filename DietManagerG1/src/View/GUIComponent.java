@@ -129,6 +129,7 @@ public class GUIComponent extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 try {
                     dietController.setPersonalInfo(Double.parseDouble(weightTextField.getText()), dietController.getCurrentDate());
+                    JOptionPane.showMessageDialog(null, "Weight has been logged!");
                     updateValues();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Wrong weight format. Please enter in double format.");
@@ -144,6 +145,13 @@ public class GUIComponent extends JFrame implements ActionListener {
         springLayout.putConstraint(SpringLayout.WEST, btnLogCalories, 442, SpringLayout.EAST, btnLogWeight);
         btnLogCalories.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                try {
+                    dietController.setUserGoals(Double.parseDouble(calorieTextField.getText()), dietController.getCurrentDate());
+                    JOptionPane.showMessageDialog(null, "Calorie limit has been logged!");
+                    updateValues();
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Wrong calorie format. Please enter in double format.");
+                }
             }
         });
         getContentPane().add(btnLogCalories);
@@ -162,8 +170,6 @@ public class GUIComponent extends JFrame implements ActionListener {
         btnAddNewFood.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 AddFood newFood = new AddFood(dietController);
-//                newFood.setVisible(true);
-//                newFood.pack();
             }
         });
         getContentPane().add(btnAddNewFood);
