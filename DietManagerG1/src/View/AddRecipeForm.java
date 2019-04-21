@@ -125,8 +125,6 @@ public class AddRecipeForm extends JFrame {
                     JOptionPane.showMessageDialog(null,
                             "Recipe successfully added: " + recipeName);
                 } catch (Exception ex) {
-                    //JOptionPane.showMessageDialog(null,
-                            //ex);
                             ex.printStackTrace();
                 }
 

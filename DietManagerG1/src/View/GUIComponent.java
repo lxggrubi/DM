@@ -31,9 +31,9 @@ public class GUIComponent extends JFrame implements ActionListener {
     private Set<String> exerciseList;
     private JTextField timeTextField;
     private JTextField dateTextField;
-    //JScrollPane consumedScrollPane;
-    JPanel consumedFoodPanel;
-    //JScrollPane exerciseScrollPanel;
+    JScrollPane consumedScrollPane;
+    JPanel consumedFoodPanel, panel, panel_1;
+    JScrollPane exerciseScrollPanel;
     JPanel exercisesLoggedPanel;
     JLabel calsLbl;
     JLabel nameLbl;
@@ -41,6 +41,8 @@ public class GUIComponent extends JFrame implements ActionListener {
     JLabel expendedLbl;
     JLabel netLbl;
     private JTextField nameTextField;
+    SpringLayout springLayout;
+    JButton btnAddNewFood;
 
     public GUIComponent(DietController dietController) {
 
@@ -56,7 +58,7 @@ public class GUIComponent extends JFrame implements ActionListener {
             }
         });
 
-        SpringLayout springLayout = new SpringLayout();
+        springLayout = new SpringLayout();
         getContentPane().setLayout(springLayout);
 
         JLabel lblDietManager = new JLabel("DIET MANAGER");
@@ -141,16 +143,6 @@ public class GUIComponent extends JFrame implements ActionListener {
         });
         getContentPane().add(btnLogCalories);
 
-        JButton btnViewLog = new JButton("View Log");
-        springLayout.putConstraint(SpringLayout.NORTH, btnViewLog, 64, SpringLayout.SOUTH, lblCalorieLimit);
-        springLayout.putConstraint(SpringLayout.SOUTH, btnViewLog, -77, SpringLayout.SOUTH, getContentPane());
-        btnViewLog.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
-        getContentPane().add(btnViewLog);
-
         foodQtyTextField = new JTextField();
         springLayout.putConstraint(SpringLayout.SOUTH, foodQtyTextField, 0, SpringLayout.SOUTH, lblQuantity);
         springLayout.putConstraint(SpringLayout.EAST, foodQtyTextField, 0, SpringLayout.EAST, lblLogFood);
@@ -158,9 +150,8 @@ public class GUIComponent extends JFrame implements ActionListener {
         foodQtyTextField.setColumns(10);
         foodQtyTextField.setText("1.0");
 
-        JButton btnAddNewFood = new JButton("Add New Food");
+        btnAddNewFood = new JButton("Add New Food");
         springLayout.putConstraint(SpringLayout.WEST, btnAddNewFood, 739, SpringLayout.WEST, getContentPane());
-        springLayout.putConstraint(SpringLayout.EAST, btnViewLog, -6, SpringLayout.WEST, btnAddNewFood);
         springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewFood, -77, SpringLayout.SOUTH, getContentPane());
         springLayout.putConstraint(SpringLayout.NORTH, btnAddNewFood, 29, SpringLayout.SOUTH, btnLogCalories);
         btnAddNewFood.addActionListener(new ActionListener() {
@@ -173,9 +164,10 @@ public class GUIComponent extends JFrame implements ActionListener {
         getContentPane().add(btnAddNewFood);
 
         JButton btnAddNewRecipe = new JButton("Add New Recipe");
-        springLayout.putConstraint(SpringLayout.EAST, btnAddNewRecipe, -970, SpringLayout.EAST, getContentPane());
-        springLayout.putConstraint(SpringLayout.WEST, btnViewLog, 6, SpringLayout.EAST, btnAddNewRecipe);
-        springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewRecipe, -77, SpringLayout.SOUTH, getContentPane());
+        springLayout.putConstraint(SpringLayout.NORTH, btnAddNewRecipe, 0, SpringLayout.NORTH, btnAddNewFood);
+        springLayout.putConstraint(SpringLayout.WEST, btnAddNewRecipe, 555, SpringLayout.WEST, getContentPane());
+        springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewRecipe, 54, SpringLayout.NORTH, btnAddNewFood);
+        springLayout.putConstraint(SpringLayout.EAST, btnAddNewRecipe, -15, SpringLayout.WEST, btnAddNewFood);
         btnAddNewRecipe.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 AddRecipeForm newRecipe = new AddRecipeForm(dietController);
@@ -204,11 +196,10 @@ public class GUIComponent extends JFrame implements ActionListener {
         getContentPane().add(btnLog);
 
         JButton btnAddNewExercise = new JButton("Add New Exercise");
-        springLayout.putConstraint(SpringLayout.WEST, btnAddNewRecipe, 6, SpringLayout.EAST, btnAddNewExercise);
-        springLayout.putConstraint(SpringLayout.NORTH, btnAddNewExercise, 29, SpringLayout.SOUTH, btnLogWeight);
+        springLayout.putConstraint(SpringLayout.NORTH, btnAddNewExercise, 0, SpringLayout.NORTH, btnAddNewFood);
+        springLayout.putConstraint(SpringLayout.WEST, btnAddNewExercise, 356, SpringLayout.WEST, getContentPane());
         springLayout.putConstraint(SpringLayout.SOUTH, btnAddNewExercise, -77, SpringLayout.SOUTH, getContentPane());
-        springLayout.putConstraint(SpringLayout.EAST, btnAddNewExercise, -1126, SpringLayout.EAST, getContentPane());
-        springLayout.putConstraint(SpringLayout.WEST, btnAddNewExercise, 281, SpringLayout.WEST, getContentPane());
+        springLayout.putConstraint(SpringLayout.EAST, btnAddNewExercise, -6, SpringLayout.WEST, btnAddNewRecipe);
         btnAddNewExercise.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 AddExerciseForm exercise = new AddExerciseForm(dietController);
@@ -231,7 +222,6 @@ public class GUIComponent extends JFrame implements ActionListener {
         getContentPane().add(lblSelectExercise);
 
         JLabel lblTimeinMinutes = new JLabel("Time (in minutes):");
-        springLayout.putConstraint(SpringLayout.NORTH, btnAddNewRecipe, 248, SpringLayout.SOUTH, lblTimeinMinutes);
         springLayout.putConstraint(SpringLayout.NORTH, lblTimeinMinutes, 0, SpringLayout.NORTH, lblQuantity);
         springLayout.putConstraint(SpringLayout.EAST, lblTimeinMinutes, 0, SpringLayout.EAST, lblSelectExercise);
         lblTimeinMinutes.setFont(new Font("Lucida Grande", Font.PLAIN, 30));
@@ -288,7 +278,6 @@ public class GUIComponent extends JFrame implements ActionListener {
         btnChangeDate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {                
                 try {
-                    System.out.println("KRAVOOO " + dateTextField.getText());
                     dietController.setCurrentDate(dateTextField.getText());
                     updateValues();
                 } catch (Exception ex) {
@@ -301,13 +290,13 @@ public class GUIComponent extends JFrame implements ActionListener {
         springLayout.putConstraint(SpringLayout.WEST, btnChangeDate, 6, SpringLayout.EAST, dateTextField);
         getContentPane().add(btnChangeDate);
 
-        JPanel panel = new JPanel();
+        panel = new JPanel();
         springLayout.putConstraint(SpringLayout.NORTH, panel, 131, SpringLayout.NORTH, getContentPane());
         springLayout.putConstraint(SpringLayout.WEST, panel, 103, SpringLayout.EAST, lblLogExercise);
         springLayout.putConstraint(SpringLayout.EAST, panel, -64, SpringLayout.EAST, getContentPane());
         getContentPane().add(panel);
 
-        JPanel panel_1 = new JPanel();
+        panel_1 = new JPanel();
         springLayout.putConstraint(SpringLayout.WEST, panel_1, 229, SpringLayout.EAST, btnLogExercise);
         springLayout.putConstraint(SpringLayout.SOUTH, panel_1, -323, SpringLayout.SOUTH, getContentPane());
         springLayout.putConstraint(SpringLayout.EAST, panel_1, 0, SpringLayout.EAST, panel);
@@ -372,28 +361,28 @@ public class GUIComponent extends JFrame implements ActionListener {
         panel_4.add(weightLbl);
 
         // PANES SHIT
-//        consumedScrollPane = new JScrollPane();
-//        springLayout.putConstraint(SpringLayout.NORTH, consumedScrollPane, 24, SpringLayout.SOUTH, panel_1);
-//        springLayout.putConstraint(SpringLayout.WEST, consumedScrollPane, 0, SpringLayout.WEST, panel);
-//        springLayout.putConstraint(SpringLayout.SOUTH, consumedScrollPane, -199, SpringLayout.SOUTH, getContentPane());
-//        springLayout.putConstraint(SpringLayout.EAST, consumedScrollPane, -64, SpringLayout.EAST, getContentPane());
-//        getContentPane().add(consumedScrollPane);
-//
-//        consumedFoodPanel = new JPanel();
-//        consumedScrollPane.setViewportView(consumedFoodPanel);
-//        consumedFoodPanel.setLayout(new BoxLayout(consumedFoodPanel, BoxLayout.X_AXIS));
+        consumedScrollPane = new JScrollPane();
+        springLayout.putConstraint(SpringLayout.NORTH, consumedScrollPane, 24, SpringLayout.SOUTH, panel_1);
+        springLayout.putConstraint(SpringLayout.WEST, consumedScrollPane, 0, SpringLayout.WEST, panel);
+        springLayout.putConstraint(SpringLayout.SOUTH, consumedScrollPane, -199, SpringLayout.SOUTH, getContentPane());
+        springLayout.putConstraint(SpringLayout.EAST, consumedScrollPane, -64, SpringLayout.EAST, getContentPane());
+        getContentPane().add(consumedScrollPane);
 
-//        exerciseScrollPanel = new JScrollPane();
-//        springLayout.putConstraint(SpringLayout.EAST, btnAddNewFood, -284, SpringLayout.WEST, exerciseScrollPanel);
-//        springLayout.putConstraint(SpringLayout.NORTH, exerciseScrollPanel, 23, SpringLayout.SOUTH, consumedScrollPane);
-//        springLayout.putConstraint(SpringLayout.WEST, exerciseScrollPanel, 0, SpringLayout.WEST, panel);
-//        springLayout.putConstraint(SpringLayout.SOUTH, exerciseScrollPanel, -70, SpringLayout.SOUTH, getContentPane());
-//        springLayout.putConstraint(SpringLayout.EAST, exerciseScrollPanel, -64, SpringLayout.EAST, getContentPane());
-//        getContentPane().add(exerciseScrollPanel);
+        consumedFoodPanel = new JPanel();
+        consumedScrollPane.setViewportView(consumedFoodPanel);
+        consumedFoodPanel.setLayout(new BoxLayout(consumedFoodPanel, BoxLayout.PAGE_AXIS));
 
-//        exercisesLoggedPanel = new JPanel();
-//        exerciseScrollPanel.setViewportView(exercisesLoggedPanel);
-//        exercisesLoggedPanel.setLayout(new BoxLayout(exercisesLoggedPanel, BoxLayout.X_AXIS));
+        exerciseScrollPanel = new JScrollPane();
+        springLayout.putConstraint(SpringLayout.EAST, btnAddNewFood, -284, SpringLayout.WEST, exerciseScrollPanel);
+        springLayout.putConstraint(SpringLayout.NORTH, exerciseScrollPanel, 23, SpringLayout.SOUTH, consumedScrollPane);
+        springLayout.putConstraint(SpringLayout.WEST, exerciseScrollPanel, 0, SpringLayout.WEST, panel);
+        springLayout.putConstraint(SpringLayout.SOUTH, exerciseScrollPanel, -70, SpringLayout.SOUTH, getContentPane());
+        springLayout.putConstraint(SpringLayout.EAST, exerciseScrollPanel, -64, SpringLayout.EAST, getContentPane());
+        getContentPane().add(exerciseScrollPanel);
+
+        exercisesLoggedPanel = new JPanel();
+        exerciseScrollPanel.setViewportView(exercisesLoggedPanel);
+        exercisesLoggedPanel.setLayout(new BoxLayout(exercisesLoggedPanel, BoxLayout.PAGE_AXIS));
 
         JLabel lblNewLabel = new JLabel("Name:");
         lblNewLabel.setFont(new Font("Lucida Grande", Font.PLAIN, 22));
@@ -420,6 +409,8 @@ public class GUIComponent extends JFrame implements ActionListener {
         getContentPane().add(btnSubmit);
 
         JButton btnSaveExit = new JButton("Save & Exit");
+        springLayout.putConstraint(SpringLayout.NORTH, btnSaveExit, 20, SpringLayout.SOUTH, btnAddNewRecipe);
+        springLayout.putConstraint(SpringLayout.WEST, btnSaveExit, 0, SpringLayout.WEST, btnAddNewRecipe);
         btnSaveExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dietController.writeCSV();
@@ -427,9 +418,6 @@ public class GUIComponent extends JFrame implements ActionListener {
             }
         });
         btnSaveExit.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-        springLayout.putConstraint(SpringLayout.NORTH, btnSaveExit, 6, SpringLayout.SOUTH, btnViewLog);
-        springLayout.putConstraint(SpringLayout.WEST, btnSaveExit, 515, SpringLayout.WEST, getContentPane());
-        springLayout.putConstraint(SpringLayout.SOUTH, btnSaveExit, 67, SpringLayout.SOUTH, btnViewLog);
         //springLayout.putConstraint(SpringLayout.EAST, btnSaveExit, -497, SpringLayout.WEST, exerciseScrollPanel);
         getContentPane().add(btnSaveExit);
 
@@ -438,61 +426,61 @@ public class GUIComponent extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
-//    private JScrollPane showFoodConsumed() {
-//        DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
-//
-//        ArrayList<Food> dailyFood = log.getDailyFood();
-//        for (int i = 0; i < dailyFood.size(); i++) {
-//            Food food = dailyFood.get(i);
-//
-//            JPanel innerPanel = new JPanel();
-//            JLabel innerLabel = new JLabel("Food: " + food.getName() + "  Servings: " + food.getServing()
-//                    + "  Calories: " + food.getCalories());
-//            JButton innerButton = new JButton("-");
-//            final int index = i;
-//            innerButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    dietController.removeFoodFromLog(index);
-//                    updateValues();
-//                }
-//            });
-//
-//            innerPanel.add(innerLabel);
-//            innerPanel.add(innerButton);
-//            consumedFoodPanel.add(innerPanel);
-//        }
-//
-//        return consumedScrollPane;
-//    }
+    private JScrollPane showFoodConsumed() {
+        DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
 
-//    private JScrollPane showExercisesLogged() {
-//        DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
-//
-//        ArrayList<Exercise> dailyExercise = log.getDailyExercise();
-//        for (int i = 0; i < dailyExercise.size(); i++) {
-//            Exercise exercise = dailyExercise.get(i);
-//
-//            JPanel innerPanel = new JPanel();
-//            JLabel innerLabel = new JLabel("Exercise: " + exercise.getName() + "  Calories Burned: " + exercise.getCaloriesBurned());
-//
-//            JButton innerButton = new JButton("-");
-//            final int index = i;
-//            innerButton.addActionListener(new ActionListener() {
-//                @Override
-//                public void actionPerformed(ActionEvent e) {
-//                    dietController.removeExerciseFromLog(index);
-//                    updateValues();
-//                }
-//            });
-//
-//            innerPanel.add(innerLabel);
-//            innerPanel.add(innerButton);
-//            exercisesLoggedPanel.add(innerPanel);
-//        }
-//
-//        return exerciseScrollPanel;
-//    }
+        ArrayList<Food> dailyFood = log.getDailyFood();
+        for (int i = 0; i < dailyFood.size(); i++) {
+            Food food = dailyFood.get(i);
+
+            JPanel innerPanel = new JPanel();
+            JLabel innerLabel = new JLabel("Food: " + food.getName() + "  Servings: " + food.getServing()
+                    + "  Calories: " + food.getCalories());
+            JButton innerButton = new JButton("-");
+            final int index = i;
+            innerButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dietController.removeFoodFromLog(index);
+                    updateValues();
+                }
+            });
+
+            innerPanel.add(innerLabel);
+            innerPanel.add(innerButton);
+            consumedFoodPanel.add(innerPanel);
+        }
+
+        return consumedScrollPane;
+    }
+
+    private JScrollPane showExercisesLogged() {
+        DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
+
+        ArrayList<Exercise> dailyExercise = log.getDailyExercise();
+        for (int i = 0; i < dailyExercise.size(); i++) {
+            Exercise exercise = dailyExercise.get(i);
+
+            JPanel innerPanel = new JPanel();
+            JLabel innerLabel = new JLabel("Exercise: " + exercise.getName() + "  Calories Burned: " + exercise.getCaloriesBurned());
+
+            JButton innerButton = new JButton("-");
+            final int index = i;
+            innerButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    dietController.removeExerciseFromLog(index);
+                    updateValues();
+                }
+            });
+
+            innerPanel.add(innerLabel);
+            innerPanel.add(innerButton);
+            exercisesLoggedPanel.add(innerPanel);
+        }
+
+        return exerciseScrollPanel;
+    }
 
     public void updateValues() {
         DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
@@ -503,18 +491,27 @@ public class GUIComponent extends JFrame implements ActionListener {
         expendedLbl.setText(Double.toString(log.getTotalCaloriesBurned()));
         netLbl.setText(Double.toString(log.getNetCals()));
 
-//        remove(consumedScrollPane);
-//        consumedScrollPane = showFoodConsumed();
-//        getContentPane().add(consumedScrollPane);
-//
-//        remove(exerciseScrollPanel);
-//        exerciseScrollPanel = showExercisesLogged();
-//        getContentPane().add(exerciseScrollPanel);
-//
-//        SwingUtilities.updateComponentTreeUI(this);
-//        
-//        consumedScrollPane.updateUI();
-//        exerciseScrollPanel.updateUI();
+        remove(consumedScrollPane);
+        consumedScrollPane = showFoodConsumed();
+        springLayout.putConstraint(SpringLayout.NORTH, consumedScrollPane, 24, SpringLayout.SOUTH, panel_1);
+        springLayout.putConstraint(SpringLayout.WEST, consumedScrollPane, 0, SpringLayout.WEST, panel);
+        springLayout.putConstraint(SpringLayout.SOUTH, consumedScrollPane, -199, SpringLayout.SOUTH, getContentPane());
+        springLayout.putConstraint(SpringLayout.EAST, consumedScrollPane, -64, SpringLayout.EAST, getContentPane());
+        getContentPane().add(consumedScrollPane);
+
+        remove(exerciseScrollPanel);
+        exerciseScrollPanel = showExercisesLogged();
+        springLayout.putConstraint(SpringLayout.EAST, btnAddNewFood, -284, SpringLayout.WEST, exerciseScrollPanel);
+        springLayout.putConstraint(SpringLayout.NORTH, exerciseScrollPanel, 23, SpringLayout.SOUTH, consumedScrollPane);
+        springLayout.putConstraint(SpringLayout.WEST, exerciseScrollPanel, 0, SpringLayout.WEST, panel);
+        springLayout.putConstraint(SpringLayout.SOUTH, exerciseScrollPanel, -70, SpringLayout.SOUTH, getContentPane());
+        springLayout.putConstraint(SpringLayout.EAST, exerciseScrollPanel, -64, SpringLayout.EAST, getContentPane());
+        getContentPane().add(exerciseScrollPanel);
+
+        SwingUtilities.updateComponentTreeUI(this);
+        
+        consumedScrollPane.updateUI();
+        exerciseScrollPanel.updateUI();
 
      
     }
