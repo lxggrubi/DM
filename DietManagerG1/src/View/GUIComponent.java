@@ -8,41 +8,25 @@ import model.DietLog;
 import model.Exercise;
 import model.Food;
 
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Set;
-import java.awt.FlowLayout;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.awt.event.*;
+import java.awt.*;
+import java.text.*;
+import java.util.*;
 
 public class GUIComponent extends JFrame implements ActionListener {
 
-    private JTextField weightTextField;
-    private JTextField calorieTextField;
+    private JTextField weightTextField, calorieTextField, foodQtyTextField, timeTextField, dateTextField;
     public JComboBox foodComboBox;
-    private JTextField foodQtyTextField;
     private DietController dietController;
     private Set<String> foodList;
     private Set<String> exerciseList;
-    private JTextField timeTextField;
-    private JTextField dateTextField;
-    JScrollPane consumedScrollPane;
-    JPanel consumedFoodPanel, panel, panel_1;
-    JScrollPane exerciseScrollPanel;
-    JPanel exercisesLoggedPanel;
-    JLabel calsLbl;
-    JLabel nameLbl;
-    JLabel weightLbl;
-    JLabel expendedLbl;
-    JLabel netLbl;
+    private JScrollPane consumedScrollPane, exerciseScrollPanel;
+    private JPanel consumedFoodPanel, panel, panel_1, exercisesLoggedPanel;
+    private JLabel calsLbl, nameLbl, weightLbl, expendedLbl, netLbl;
     private JTextField nameTextField;
-    SpringLayout springLayout;
-    JButton btnAddNewFood;
+    private SpringLayout springLayout;
+    private JButton btnAddNewFood;
+    private DietLog log = new DietLog();
 
     public GUIComponent(DietController dietController) {
 
@@ -53,8 +37,8 @@ public class GUIComponent extends JFrame implements ActionListener {
 
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                dietController.writeCSV();
-                //System.exit(0);
+                dietController.logToCSV();
+                System.exit(0);
             }
         });
 
@@ -128,7 +112,7 @@ public class GUIComponent extends JFrame implements ActionListener {
         btnLogWeight.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    dietController.setPersonalInfo(Double.parseDouble(weightTextField.getText()), dietController.getCurrentDate());
+                    dietController.logDailyWeight(Double.parseDouble(weightTextField.getText()), dietController.getCurrentDate());
                     JOptionPane.showMessageDialog(null, "Weight has been logged!");
                     updateValues();
                 } catch (Exception ex) {
@@ -146,7 +130,7 @@ public class GUIComponent extends JFrame implements ActionListener {
         btnLogCalories.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    dietController.setUserGoals(Double.parseDouble(calorieTextField.getText()), dietController.getCurrentDate());
+                    dietController.logCalorieLimit(Double.parseDouble(calorieTextField.getText()), dietController.getCurrentDate());
                     JOptionPane.showMessageDialog(null, "Calorie limit has been logged!");
                     updateValues();
                 } catch (Exception ex) {
@@ -417,7 +401,6 @@ public class GUIComponent extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 dietController.setUserName(nameTextField.getText());
                 updateValues();
-                //System.out.println("AsgGAS");
             }
         });
         springLayout.putConstraint(SpringLayout.NORTH, btnSubmit, 4, SpringLayout.NORTH, lblDate);
@@ -429,13 +412,23 @@ public class GUIComponent extends JFrame implements ActionListener {
         springLayout.putConstraint(SpringLayout.WEST, btnSaveExit, 0, SpringLayout.WEST, btnAddNewRecipe);
         btnSaveExit.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                dietController.writeCSV();
+                dietController.logToCSV();
                 System.exit(0);
             }
         });
         btnSaveExit.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-        //springLayout.putConstraint(SpringLayout.EAST, btnSaveExit, -497, SpringLayout.WEST, exerciseScrollPanel);
         getContentPane().add(btnSaveExit);
+        
+        JButton btnViewNutrients = new JButton("View Nutrients");
+        btnViewNutrients.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+                    NutrientPanel nutrients = new NutrientPanel(dietController);
+                    nutrients.setVisible(true);
+        	}
+        });
+        springLayout.putConstraint(SpringLayout.NORTH, btnViewNutrients, 6, SpringLayout.SOUTH, exerciseScrollPanel);
+        springLayout.putConstraint(SpringLayout.EAST, btnViewNutrients, -166, SpringLayout.EAST, getContentPane());
+        getContentPane().add(btnViewNutrients);
 
         this.setPreferredSize(new Dimension(1600, 680));
         this.pack();

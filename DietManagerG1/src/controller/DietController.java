@@ -2,176 +2,256 @@ package controller;
 
 import model.*;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.ArrayList;
+import java.util.*;
+import javax.swing.*;
 
+/**
+ * Class that controls the data flow inside the DietManager program.
+ * @author G1
+ */
 public class DietController {
-    private FoodList foodList;
-    private ExerciseList exerciseList;
-    private CSVParser csv = new CSVParser();
-    private User user =  new User();
+
+    private FoodList foods;
+    private ExerciseList exercises;
+    private DataLoad data = new DataLoad();
+    private User user = new User();
 
     public DietController() {
-        foodList = csv.readFoodCSV();
-        exerciseList = csv.readExerciseCSV();
-        user.setLogHistory(csv.readLogCSV(foodList, exerciseList));
-    }
-
-    /*
-        Given a BasicFood, add it to the global FoodList.
-     */
-    public void addBasicFood(String name, int calories, double carbs, double proteins, double fats) {
-        BasicFood food = new BasicFood(name, calories, carbs, proteins, fats);
-        foodList.addFood(food);
+        foods = data.loadFoods();
+        exercises = data.loadExercises();
+        user.setLogHistory(data.loadLogs(foods, exercises));
     }
 
     /**
-     * Adds an Exercise to the global Exercise list
-     * @param name - the name of the exercise
-     * @param calsBurned - the number of calories burned for a 100lb person
+     * Add basic food to the list of foods.
+     *
+     * @param name
+     * @param calories
+     * @param carbs
+     * @param proteins
+     * @param fats
      */
-    public void addExercise(String name, double calsBurned){
+    public void addBasicFood(String name, int calories, double carbs, double proteins, double fats) {
+        BasicFood food = new BasicFood(name, calories, carbs, proteins, fats);
+        foods.addFood(food);
+    }
+
+    /**
+     * Adds exercise to the list of exercises.
+     *
+     * @param name
+     * @param calories
+     */
+    public void addExercise(String name, double calories) {
         try {
-            if(name.contains(",")) {
-                throw new Exception("Sorry, you cannot have commas in your exercise name");
+            if (name.contains(",")) {
+                JOptionPane.showMessageDialog(null, "No special characters allowed!");
+            } else {
+                Exercise exercise = new Exercise(name, calories);
+                exercises.addExercise(exercise);
+                JOptionPane.showMessageDialog(null, "Exercise has been addded!");
             }
-            else {
-                Exercise exercise = new Exercise(name, calsBurned);
-                exerciseList.addExercise(exercise);
-                System.out.println("Your exercise has been added!");
-            }
-        }
-        catch(Exception e ) {
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
     }
 
-    /*
-        Given a Recipe, add it to the global FoodList.
-     */
-    public void addRecipe(String name, ArrayList<String> recipeFoods, ArrayList<String> recipeServings) {
-        
-    	// Creates a new recipe object
-    	Recipe recipe = new Recipe(name);
-    	
-    	// Loops through arrayList and adds each food object as a child
-    	for (int i = 0; i < recipeFoods.size(); i++ ) {
-    		recipe.addChild( foodList.findFood( recipeFoods.get(i) ), recipeServings.get(i) );
-    	}
-    	
-    	recipe.addNutritionalInfo();
-    	
-    	// Adds the recipe to the list of food
-    	foodList.addFood(recipe);
-    	
-    	System.out.println(recipe.getCalories());
-    	
-    }
-
     /**
-     * Logs a food to the food log for the current day
-     * @param foodName - name of the food being logged
-     * @param servings - number of servings of the food
-     * @return - true if successful, false on failure
+     * Adds recipe to the list of recipes.
+     *
+     * @param name
+     * @param recipesList
+     * @param quantity
      */
-    public boolean logFood(String foodName, double servings, String date) {
-        Food loggedFood = foodList.findFood(foodName);
-        user.logFood(loggedFood, servings, date);
+    public void addRecipe(String name, ArrayList<String> recipesList, ArrayList<String> quantity) {
+        Recipe recipe = new Recipe(name);
+
+        for (int i = 0; i < recipesList.size(); i++) {
+            recipe.addChild(foods.findFood(recipesList.get(i)), quantity.get(i));
+        }
+
+        recipe.addNutritionalInfo();
+        foods.addFood(recipe);
+    }
+    
+    /**
+     * Adds a food to the log.csv on a specified day.
+     * @param name
+     * @param quantity
+     * @param date
+     * @return 
+     */
+    public boolean logFood(String name, double quantity, String date) {
+        Food loggedFood = foods.findFood(name);
+        user.logFood(loggedFood, quantity, date);
         return true;
     }
 
-
-    public boolean logExercise(String name, double time, String date){
-        Exercise loggedExer = exerciseList.getExercise(name);
+    /**
+     * Adds exercise to the log.csv on a specified day.
+     * @param name
+     * @param time
+     * @param date
+     * @return 
+     */
+    public boolean logExercise(String name, double time, String date) {
+        Exercise loggedExer = exercises.getExercise(name);
         user.logExercise(loggedExer, time, date);
         return true;
     }
 
-    // searches for food in foodlist
+    /**
+     * Finds a food in the list of foods.
+     * @param nameFood
+     * @return 
+     */
     public Food searchFoodList(String nameFood) {
-        return foodList.findFood(nameFood);
+        return foods.findFood(nameFood);
     }
 
+    /**
+     * Finds an exercise in exercise list.
+     * @param exerName
+     * @return 
+     */
     public Exercise searchExerciseList(String exerName) {
-        return exerciseList.getExercise(exerName);
+        return exercises.getExercise(exerName);
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Set<String> getFoodListKeys() {
-        return foodList.getFoods().keySet();
+        return foods.getFoods().keySet();
     }
 
-    public Set<String> getExerciseNames(){
-        return exerciseList.getAllExercises().keySet();
+    /**
+     * Method that gets exercise names.
+     * @return 
+     */
+    public Set<String> getExerciseNames() {
+        return exercises.getAllExercises().keySet();
     }
 
-    public void setUserGoals(double calorieLimit, String date) {
-        user.setCaloricLimit(calorieLimit);
-        user.updateLogCalorieLimit(calorieLimit, date);
+    /**
+     * Method that logs the calorie limit on a specified day.
+     * @param calories
+     * @param date 
+     */
+    public void logCalorieLimit(double calories, String date) {
+        user.setCaloricLimit(calories);
+        user.updateLogCalorieLimit(calories, date);
     }
 
-    // set user's weight
-    public void setPersonalInfo(double weight, String date) {
+    /**
+     * Method that logs the user's weight.
+     * @param weight
+     * @param date 
+     */
+    public void logDailyWeight(double weight, String date) {
         user.setWeight(weight);
         user.updateLogWeight(weight, date);
     }
 
-
     // attempts to find desired DietLog object and returns it
+    /**
+     * 
+     * @param date
+     * @return 
+     */
     public DietLog getDesiredDietLog(String date) {
         return user.searchLogHistory(date).calcTotals();
     }
 
     // returns history of user's dietlog objects
+    /**
+     * 
+     * @return 
+     */
     public Map<String, DietLog> getUserHistory() {
         return user.getLogHistory();
     }
 
-
+    /**
+     * Method that returns the current date.
+     * @return 
+     */
     public String getCurrentDate() {
         return user.getCurrentDate();
     }
 
+    /**
+     * Method that sets the current date.
+     * @param date 
+     */
     public void setCurrentDate(String date) {
         user.setCurrentDate(date);
     }
 
+    /**
+     * Method that gets the log for today.
+     * @return 
+     */
     private DietLog getTodaysLog() {
         return user.getTodaysLog();
     }
 
+    /**
+     * Method that gets the foods logged for today.
+     * @return 
+     */
     public ArrayList<Food> getTodaysLogList() {
         return getTodaysLog().getDailyFood();
     }
 
-    public ArrayList<Exercise> getTodaysExerciseLogList(){
+    /**
+     * Method that gets the exercises logged for today.
+     * @return 
+     */
+    public ArrayList<Exercise> getTodaysExerciseLogList() {
         return getTodaysLog().getDailyExercise();
     }
 
+    /**
+     * Method that removes food from the log.csv.
+     * @param index 
+     */
     public void removeFoodFromLog(int index) {
         getTodaysLog().removeFoodByIndex(index);
     }
 
+    /**
+     * Method that removes exercise from the log.csv.
+     * @param index 
+     */
     public void removeExerciseFromLog(int index) {
         getTodaysLog().removeExerciseByIndex(index);
     }
 
+    /**
+     * Method that sets the user's name.
+     * @param name 
+     */
     public void setUserName(String name) {
         user.setName(name);
     }
 
+    /**
+     * Method that returns the user's name.
+     * @return 
+     */
     public String getUserName() {
         return user.getName();
     }
 
-    /*
-        Write the entire FoodList and Daily DietLog to CSV.
+    /**
+     * Method that writes everything to the log.csv.
      */
-    public void writeCSV() {
-        csv.writeFoodList(foodList);
-        csv.writeExerciseList(exerciseList);
-        csv.writeToLog(user);
+    public void logToCSV() {
+        data.appendFoods(foods);
+        data.appendExercises(exercises);
+        data.appendLogs(user);
     }
 
 }
