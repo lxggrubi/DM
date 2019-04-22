@@ -140,7 +140,7 @@ public class DietController {
      * @param date 
      */
     public void logCalorieLimit(double calories, String date) {
-        user.setCaloricLimit(calories);
+        user.setCaloriesLimit(calories);
         user.updateLogCalorieLimit(calories, date);
     }
 
@@ -194,7 +194,7 @@ public class DietController {
      * @return 
      */
     private DietLog getTodaysLog() {
-        return user.getTodaysLog();
+        return user.getCurrentLog();
     }
 
     /**
@@ -234,7 +234,7 @@ public class DietController {
      * @param name 
      */
     public void setUserName(String name) {
-        user.setName(name);
+        user.setUserName(name);
     }
 
     /**
