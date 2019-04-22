@@ -275,7 +275,6 @@ public class GUIComponent extends JFrame implements ActionListener {
         btnChangeDate.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 DateFormat df = new SimpleDateFormat("yyyy/mm/dd");
-
                 try {
                     df.setLenient(false);
                     dietController.setCurrentDate(df.parse(dateTextField.getText()).toString());
