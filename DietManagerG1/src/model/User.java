@@ -76,18 +76,16 @@ return (logHistory.get(currentDate) == null) ? logHistory.put(currentDate, new D
   searchLogHistory(date).logFood(food, servings);
  }
 
- public void logExercise(Exercise exer, double time, String date) {
+ public void logExercise(Workout exer, double time, String date) {
   searchLogHistory(date).logExercise(exer, time);
  }
 
  public DietLog searchLogHistory(String date) {
   DietLog desiredLog = logHistory.get(date);
 
-  if (desiredLog != null) {
-   return desiredLog;
-  } else {
-   desiredLog = new DietLog();
-
+  if (desiredLog != null) { return desiredLog;}
+  else { desiredLog = new DietLog();
+   
    // getting previous most recent log
    ArrayList < String > sortedLogs = new ArrayList < > (logHistory.keySet());
    sortedLogs.add(date);

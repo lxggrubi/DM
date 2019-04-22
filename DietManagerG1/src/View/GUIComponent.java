@@ -5,7 +5,7 @@ import javax.swing.*;
 import controller.DietController;
 import java.awt.Dimension;
 import model.DietLog;
-import model.Exercise;
+import model.Workout;
 import model.Food;
 
 import java.awt.event.*;
@@ -465,9 +465,9 @@ public class GUIComponent extends JFrame implements ActionListener {
     private JScrollPane showExercisesLogged() {
         DietLog log = dietController.getDesiredDietLog(dietController.getCurrentDate());
 
-        ArrayList<Exercise> dailyExercise = log.getDailyExercise();
+        ArrayList<Workout> dailyExercise = log.getDailyExercise();
         for (int i = 0; i < dailyExercise.size(); i++) {
-            Exercise exercise = dailyExercise.get(i);
+            Workout exercise = dailyExercise.get(i);
 
             JPanel innerPanel = new JPanel();
             JLabel innerLabel = new JLabel("Exercise: " + exercise.getName() + "  Calories Burned: " + exercise.getCaloriesBurned());

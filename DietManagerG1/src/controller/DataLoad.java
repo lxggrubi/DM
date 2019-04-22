@@ -6,7 +6,7 @@ import model.FoodList;
 import model.Recipe;
 import model.User;
 import model.DietLog;
-import model.Exercise;
+import model.Workout;
 import model.ExerciseList;
 
 import java.io.*;
@@ -48,7 +48,7 @@ public class DataLoad {
 
             Object[] exercises = exerList.getAllExercises().values().toArray();
             for (int i = 0; i < exercises.length; i++) {
-                Exercise exer = (Exercise) exercises[i];
+                Workout exer = (Workout) exercises[i];
 
                 String line = (i > 0 ? "\n" : "") + exer.buildCSVFormat();
                 fw.append(line);
@@ -94,7 +94,7 @@ public class DataLoad {
                     fw.append(foodLine);
                 }
 
-                for (Exercise e : value.getDailyExercise()) {
+                for (Workout e : value.getDailyExercise()) {
                     String exerLine = dateLine + "e," + e.getName() + "," + e.getTime() + "\n";
                     fw.append(exerLine);
                 }
@@ -175,7 +175,7 @@ public class DataLoad {
                 String[] lineArr = lineRead.split(",");
 
                 if (lineArr[0].equals("e")) {
-                    exerciseList.addExercise(new Exercise(lineArr[1], Double.parseDouble(lineArr[2])));
+                    exerciseList.addExercise(new Workout(lineArr[1], Double.parseDouble(lineArr[2])));
                 }
             }
             br.close();
@@ -227,11 +227,11 @@ public class DataLoad {
                         dl.logFood(new BasicFood(split[4]), Double.parseDouble(split[5]));
                     }
                 } else if (split[3] == "e") {
-                    Exercise exer = exercisesList.getExercise(split[4]);
+                    Workout exer = exercisesList.getExercise(split[4]);
                     if (exer != null) {
                         dl.logExercise(exer, Double.parseDouble(split[5]));
                     } else {
-                        dl.logExercise(new Exercise(split[4], Double.parseDouble(split[5])), Double.parseDouble(split[5]));
+                        dl.logExercise(new Workout(split[4], Double.parseDouble(split[5])), Double.parseDouble(split[5]));
                     }
                 }
             }

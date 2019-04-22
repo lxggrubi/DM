@@ -47,7 +47,7 @@ public class DietController {
             if (name.contains(",")) {
                 JOptionPane.showMessageDialog(null, "No special characters allowed!");
             } else {
-                Exercise exercise = new Exercise(name, calories);
+                Workout exercise = new Workout(name, calories);
                 exercises.addExercise(exercise);
                 JOptionPane.showMessageDialog(null, "Exercise has been addded!");
             }
@@ -95,7 +95,7 @@ public class DietController {
      * @return 
      */
     public boolean logExercise(String name, double time, String date) {
-        Exercise loggedExer = exercises.getExercise(name);
+        Workout loggedExer = exercises.getExercise(name);
         user.logExercise(loggedExer, time, date);
         return true;
     }
@@ -114,7 +114,7 @@ public class DietController {
      * @param exerName
      * @return 
      */
-    public Exercise searchExerciseList(String exerName) {
+    public Workout searchExerciseList(String exerName) {
         return exercises.getExercise(exerName);
     }
 
@@ -209,7 +209,7 @@ public class DietController {
      * Method that gets the exercises logged for today.
      * @return 
      */
-    public ArrayList<Exercise> getTodaysExerciseLogList() {
+    public ArrayList<Workout> getTodaysExerciseLogList() {
         return getTodaysLog().getDailyExercise();
     }
 

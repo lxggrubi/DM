@@ -26,7 +26,7 @@ public class DietLog {
 	protected Date date = new Date();
 
 	private ArrayList<Food> dailyFood = new ArrayList<>();
-	private ArrayList<Exercise> dailyExercise = new ArrayList<>();
+	private ArrayList<Workout> dailyExercise = new ArrayList<>();
 
 	// Constructor for daily log object
 	public DietLog() {
@@ -100,7 +100,7 @@ public class DietLog {
 	 * @param time The duration of the exercise in minutes
 	 * @return The total number of calories burned by the user
 	 */
-	public double caloriesBurned(Exercise exer, double time){
+	public double caloriesBurned(Workout exer, double time){
 		double burnedCals = exer.getCaloriesBurned() * (this.dailyWeight / 100.0) * (time / 60);
 		totalCaloriesBurned += burnedCals;
 		return burnedCals;
@@ -108,10 +108,10 @@ public class DietLog {
 
 	/**
 	 * Adds an exercise to the list of exercises performed
-	 * @param exer the Exercise object
+	 * @param exer the Workout object
 	 * @param time The duration of the exercise
 	 */
-	public void logExercise(Exercise exer, double time){
+	public void logExercise(Workout exer, double time){
 		double burnedCalories = caloriesBurned(exer, time);
 
 		exer.setCaloriesBurned(burnedCalories);
@@ -129,9 +129,9 @@ public class DietLog {
 
 	/**
 	 * Returns all of the exercises performed by the user for the current date
-	 * @return an ArrayList on Exercise Objects
+	 * @return an ArrayList on Workout Objects
 	 */
-	public ArrayList<Exercise> getDailyExercise() {
+	public ArrayList<Workout> getDailyExercise() {
 		return dailyExercise;
 	}
 
@@ -141,7 +141,7 @@ public class DietLog {
 	 */
 	public ArrayList<String> getExerciseInfo() {
 		ArrayList<String> ExerciseInfoList = new ArrayList<>();
-		for(Exercise e: dailyExercise){
+		for(Workout e: dailyExercise){
 			String eName = e.getName();
 			double calsBurned = e.getCaloriesBurned();
 			String exerInfo = "Name: " + eName + "\nCalories: " + calsBurned;
@@ -199,7 +199,7 @@ public class DietLog {
 			totalCarbs += (food.getCarbs() * foodServing);
 		}
 
-		for(Exercise e: dailyExercise){
+		for(Workout e: dailyExercise){
 			totalBurned += e.getCaloriesBurned();
 		}
 

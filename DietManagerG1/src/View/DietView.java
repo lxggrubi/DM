@@ -3,7 +3,7 @@ package view;
 import controller.DietController;
 import model.BasicFood;
 import model.DietLog;
-import model.Exercise;
+import model.Workout;
 import model.Food;
 
 import java.io.Console;
