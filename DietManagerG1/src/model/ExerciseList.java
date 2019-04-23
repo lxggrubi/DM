@@ -1,6 +1,5 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +14,7 @@ public class ExerciseList extends Workout {
   * Method used to add the workouts to the array list (it is containing workout objects)
   * @param exer - It is the workout object
   */
- public void addExercise(Workout exercise) {
+ public void newExercise(Workout exercise) {
   this.Exercises.put(exercise.getWorkoutName(), exercise);
  }
 
@@ -24,8 +23,8 @@ public class ExerciseList extends Workout {
   * @param workoutName - It is the name of workout
   */
  public Workout getExercise(String workoutName) {
-  for (String exer: Exercises.keySet()) {
-   if (exer.toLowerCase().equals(workoutName.toLowerCase())) return Exercises.get(exer).copy();
+  for (String ex: Exercises.keySet()) {
+   if (ex.toLowerCase().equals(workoutName.toLowerCase())) return Exercises.get(ex).copy();
   }
   return null;
  }
@@ -33,7 +32,7 @@ public class ExerciseList extends Workout {
  /**
   * Accessor that is used to return the workout object  
   */
- public Map < String, Workout > getAllExercises() {
+ public Map < String, Workout > getExercisesList() {
   return Exercises;
  }
 

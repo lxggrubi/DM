@@ -46,7 +46,7 @@ public class DataLoad {
             FileWriter fw = new FileWriter(file);
             fw.write("");
 
-            Object[] exercises = exerList.getAllExercises().values().toArray();
+            Object[] exercises = exerList.getExercisesList().values().toArray();
             for (int i = 0; i < exercises.length; i++) {
                 Workout exer = (Workout) exercises[i];
 
@@ -175,7 +175,7 @@ public class DataLoad {
                 String[] lineArr = lineRead.split(",");
 
                 if (lineArr[0].equals("e")) {
-                    exerciseList.addExercise(new Workout(lineArr[1], Double.parseDouble(lineArr[2])));
+                    exerciseList.newExercise(new Workout(lineArr[1], Double.parseDouble(lineArr[2])));
                 }
             }
             br.close();

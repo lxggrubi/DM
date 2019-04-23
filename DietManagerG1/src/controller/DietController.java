@@ -48,7 +48,7 @@ public class DietController {
                 JOptionPane.showMessageDialog(null, "No special characters allowed!");
             } else {
                 Workout exercise = new Workout(name, calories);
-                exercises.addExercise(exercise);
+                exercises.newExercise(exercise);
                 JOptionPane.showMessageDialog(null, "Exercise has been addded!");
             }
         } catch (Exception e) {
@@ -131,7 +131,7 @@ public class DietController {
      * @return 
      */
     public Set<String> getExerciseNames() {
-        return exercises.getAllExercises().keySet();
+        return exercises.getExercisesList().keySet();
     }
 
     /**
