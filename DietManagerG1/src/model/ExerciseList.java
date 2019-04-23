@@ -20,7 +20,7 @@ public class ExerciseList extends Workout {
  }
 
  /**
-  * Gets an exercise that matches the name given by the user
+  * Accessor for an exercise that matches the name given by the user
   * @param workoutName - It is the name of workout
   */
  public Workout getExercise(String workoutName) {
@@ -31,7 +31,7 @@ public class ExerciseList extends Workout {
  }
 
  /**
-  * This is used to return the workout object  
+  * Accessor that is used to return the workout object  
   */
  public Map < String, Workout > getAllExercises() {
   return Exercises;
