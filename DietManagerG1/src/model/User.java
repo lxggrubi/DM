@@ -148,7 +148,7 @@ return (previousLog.get(currentDate) == null) ? previousLog.put(currentDate, new
    Collections.sort(sortedLogs);
    int previousIndex = sortedLogs.indexOf(date) - 1;
 
-   if (previousIndex >= 0 && previousIndex < sortedLogs.size()) {
+   if (previousIndex < sortedLogs.size() && previousIndex >= 0  ) {
     DietLog existingLog = previousLog.get(sortedLogs.get(previousIndex));
     selectedLog.setDailyWeight(existingLog.getDailyWeight());
     selectedLog.setDailyLimit(existingLog.getDailyLimit());
