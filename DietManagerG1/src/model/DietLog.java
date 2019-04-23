@@ -136,12 +136,12 @@ public class DietLog {
 
 /**
  * Loging the food that has been consumed to the list
- * @param foodItem
+ * @param food
  * @param servings 
  */
- public void logFood(Food foodItem, double servings) {
-  foodItem.setServing(servings);
-  dailyFood.add(foodItem);
+ public void logFood(Food food, double servings) {
+  food.setServing(servings);
+  dailyFood.add(food);
  }
 
  /**
@@ -163,7 +163,6 @@ public class DietLog {
   */
  public void logExercise(Workout wo2, double ti2) {
   double usedCalories = caloriesSpend(wo2, ti2);
-
   wo2.setCaloriesSpent(usedCalories);
   wo2.setTime(ti2);
   dailyExercise.add(wo2);
@@ -191,9 +190,9 @@ public class DietLog {
   */
  public ArrayList < String > getExerciseStatistic() {
   ArrayList < String > ExerciseStatistic = new ArrayList < > ();
-  for (Workout e: dailyExercise) {
-   String nameOfExercise = e.getWorkoutName();
-   double caloriesSpent = e.getCaloriesSpent();
+  for (Workout workout: dailyExercise) {
+   String nameOfExercise = workout.getWorkoutName();
+   double caloriesSpent = workout.getCaloriesSpent();
    String exerciseInformation = "Name: " + nameOfExercise + "\nCalories: " + caloriesSpent;
    ExerciseStatistic.add(exerciseInformation);
   }
@@ -204,10 +203,10 @@ public class DietLog {
 
 /**
  * Removes food item from from list
- * @param foodItem 
+ * @param food 
  */
- public void removeFood(Food foodItem) {
-  dailyFood.remove(foodItem);
+ public void removeFood(Food food) {
+  dailyFood.remove(food);
  }
 /**
  * Removes food item from from list
@@ -221,20 +220,23 @@ public class DietLog {
   return dailyFood;
  }
 
-
+/**
+ * Method accessor used for information about food
+ * @return 
+ */
  public ArrayList < String > getFoodInfo() {
-  ArrayList < String > foodInfoList = new ArrayList < > ();
+  ArrayList < String > foodInformation = new ArrayList < > ();
 
   for (Food food: dailyFood) {
-   String foodName = food.getName();
-   int foodCalories = food.getCalories();
-   double foodServings = food.getServing();
+   String name = food.getName();
+   int calories = food.getCalories();
+   double portion = food.getServing();
 
-   String foodInfo = "Name: " + foodName + "\nCalories: " + foodCalories + "\nServings:  " + foodServings;
-   foodInfoList.add(foodInfo);
+   String Information = "Name: " + name + "\nCalories: " + calories + "\nServings:  " + portion;
+   foodInformation.add(Information);
   }
 
-  return foodInfoList;
+  return foodInformation;
  }
 
 
@@ -247,11 +249,11 @@ public class DietLog {
   double _carbsSum = 0;
 
   for (Food food: dailyFood) {
-   double foodServing = food.getServing();
-   _caloriesSum += (food.getCalories() * foodServing);
-   _fatSum += (food.getFat() * foodServing);
-   _proteinSum += (food.getProtein() * foodServing);
-   _carbsSum += (food.getCarbs() * foodServing);
+   double portion = food.getServing();
+   _caloriesSum = (int) (_caloriesSum + (food.getCalories() * portion));
+   _fatSum = _fatSum + (food.getFat() * portion);
+   _proteinSum = _proteinSum + (food.getProtein() * portion);
+   _carbsSum = _carbsSum + (food.getCarbs() * portion);
   }
 
   for (Workout e: dailyExercise) {
@@ -264,10 +266,10 @@ public class DietLog {
   this.proteinSum = _proteinSum;
   this.carbsSum = _carbsSum;
 
-  calcPercentages();
-
+  calculatePercentages();
   return this;
  }
+ 
 /**
  * Calculating difference between consumed and spent calories
  * @return 
@@ -275,14 +277,14 @@ public class DietLog {
  public double calculatingCalories() {
   int caloriesConsumed = this.caloriesSum;
   double caloriesSpent = this.caloriesSpentSum;
-  double caloriesCalculated = dailyLimit + caloriesSpent - caloriesConsumed;
+  double caloriesCalculated = dailyLimit - caloriesConsumed + caloriesSpent;
 
   return caloriesCalculated;
  }
 /**
  * Calculating percentages and rounding to integer
  */
- public void calcPercentages() {
+ public void calculatePercentages() {
   double totalNutrients = this.carbsSum + this.proteinSum + this.fatSum;
 
   this.fatPercentage = (int) Math.rint(this.fatSum / totalNutrients * 100);
