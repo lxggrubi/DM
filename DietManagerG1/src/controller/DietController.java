@@ -96,7 +96,7 @@ public class DietController {
      */
     public boolean logExercise(String name, double time, String date) {
         Workout loggedExer = exercises.getExercise(name);
-        user.logExercise(loggedExer, time, date);
+        user.logExercise(time, date, loggedExer);
         return true;
     }
 
@@ -141,7 +141,7 @@ public class DietController {
      */
     public void logCalorieLimit(double calories, String date) {
         user.setCaloriesLimit(calories);
-        user.updateLogCalorieLimit(calories, date);
+        user.updateCalorieLog(calories, date);
     }
 
     /**
@@ -151,7 +151,7 @@ public class DietController {
      */
     public void logDailyWeight(double weight, String date) {
         user.setWeight(weight);
-        user.updateLogWeight(weight, date);
+        user.updateWeightLog(weight, date);
     }
 
     // attempts to find desired DietLog object and returns it
@@ -161,7 +161,7 @@ public class DietController {
      * @return 
      */
     public DietLog getDesiredDietLog(String date) {
-        return user.searchLogHistory(date).calculatingSum();
+        return user.searchPreviousLog(date).calculatingSum();
     }
 
     // returns history of user's dietlog objects
@@ -170,7 +170,7 @@ public class DietController {
      * @return 
      */
     public Map<String, DietLog> getUserHistory() {
-        return user.getLogHistory();
+        return user.getPreviousLog();
     }
 
     /**
@@ -242,7 +242,7 @@ public class DietController {
      * @return 
      */
     public String getUserName() {
-        return user.getName();
+        return user.getUserName();
     }
 
     /**

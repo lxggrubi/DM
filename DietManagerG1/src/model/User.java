@@ -20,7 +20,8 @@ public class User {
   user = "User";
  }
 
- public Map < String, DietLog > logHistory = new HashMap < String, DietLog > ();
+ public Map < String, DietLog > previousLog = new HashMap < String, DietLog > ();
+ 
 /**
  * Mutator used to set weight of user
  * @param _weight - Double used for users weight
@@ -50,16 +51,16 @@ public class User {
  }
 /**
  * Mutator used to set the desired weight that users want to reach
- * @param _desiredWeight - the weight that will be our goal to reach
+ * @param _targetWeight - the weight that will be our goal to reach
  */
- public void setDesiredWeight(double _desiredWeight) {
-  this.targetWeight = _desiredWeight;
+ public void setTargetWeight(double _targetWeight) {
+  this.targetWeight = targetWeight;
  }
 /**
  * Accessors for returning users desired weight from input
  * @return will return desired weight
  */
- public double getDesiredWeight() {
+ public double getTargetWeight() {
   return targetWeight;
  }
 /**
@@ -73,7 +74,7 @@ public class User {
  * Accessors for returning name of the user
  * @return - users name
  */
- public String getName() {
+ public String getUserName() {
   return this.user;
  }
 /**
@@ -91,25 +92,25 @@ public class User {
   currentDate = _currentDate;
  }
 /**
- * Map that will store the LogHistory
+ * Map that will store the Previous Log
  * @return - History of what has been logged
  */
- public Map < String, DietLog > getLogHistory() {
-  return logHistory;
+ public Map < String, DietLog > getPreviousLog() {
+  return previousLog ;
  }
 /**
  * Mutator for log history 
  * @param logHistory - History of what has been logged
  */
  public void setLogHistory(Map < String, DietLog > logHistory) {
-  this.logHistory = logHistory;
+  this.previousLog = logHistory;
  }
 /**
  * Ternary operator for checking log history 
  * @return - if it is null it will return current date and if it is not it will be new log
  */
  public DietLog getCurrentLog() {     
-return (logHistory.get(currentDate) == null) ? logHistory.put(currentDate, new DietLog()) : logHistory.get(currentDate);  
+return (previousLog.get(currentDate) == null) ? previousLog.put(currentDate, new DietLog()) : previousLog.get(currentDate);  
  }
 /**
  * Logging the food 
@@ -118,7 +119,7 @@ return (logHistory.get(currentDate) == null) ? logHistory.put(currentDate, new D
  * @param date 
  */
  public void logFood(Food food, double servings, String date) {
-  searchLogHistory(date).logFood(food, servings);
+  searchPreviousLog(date).logFood(food, servings);
  }
 /**
  * Logging for the exercise
@@ -126,53 +127,53 @@ return (logHistory.get(currentDate) == null) ? logHistory.put(currentDate, new D
  * @param time
  * @param date 
  */
- public void logExercise(Workout exer, double time, String date) {
-  searchLogHistory(date).logExercise(exer, time);
+ public void logExercise(double time, String date, Workout workout) {
+  searchPreviousLog(date).logExercise(workout, time);
  }
 /**
  * This method will check the last log
  * If there is found it will give us the latest log
- * If it is empty it will set the default vallues
+ * If it is empty it will set the default values
  * @param date
  * @return - it will return Diet log to the user
  */
- public DietLog searchLogHistory(String date) {
-  DietLog desiredLog = logHistory.get(date);
+ public DietLog searchPreviousLog(String date) {
+  DietLog selectedLog = previousLog.get(date);
 
-  if (desiredLog != null) { return desiredLog;}
-  else { desiredLog = new DietLog();
+  if (selectedLog != null) { return selectedLog;}
+  else { selectedLog = new DietLog();
    
-   ArrayList < String > sortedLogs = new ArrayList < > (logHistory.keySet());
+   ArrayList < String > sortedLogs = new ArrayList < > (previousLog.keySet());
    sortedLogs.add(date);
    Collections.sort(sortedLogs);
    int previousIndex = sortedLogs.indexOf(date) - 1;
 
    if (previousIndex >= 0 && previousIndex < sortedLogs.size()) {
-    DietLog previousLog = logHistory.get(sortedLogs.get(previousIndex));
-    desiredLog.setDailyWeight(previousLog.getDailyWeight());
-    desiredLog.setDailyLimit(previousLog.getDailyLimit());
+    DietLog existingLog = previousLog.get(sortedLogs.get(previousIndex));
+    selectedLog.setDailyWeight(existingLog.getDailyWeight());
+    selectedLog.setDailyLimit(existingLog.getDailyLimit());
    } else {
-    desiredLog.setDailyWeight(150.0);
-    desiredLog.setDailyLimit(2000.0);
+    selectedLog.setDailyWeight(150.0);
+    selectedLog.setDailyLimit(2000.0);
    }
-   logHistory.put(date, desiredLog);
-   return logHistory.get(date);
+   previousLog.put(date, selectedLog);
+   return previousLog.get(date);
   }
  }
 /**
  * Updating the calories limit for the user
- * @param calorieLimit
+ * @param maxCalories
  * @param date 
  */
- public void updateLogCalorieLimit(double calorieLimit, String date) {
-  searchLogHistory(date).setDailyLimit(calorieLimit);
+ public void updateCalorieLog(double maxCalories, String date) {
+  searchPreviousLog(date).setDailyLimit(maxCalories);
  }
 /**
  * Updating the log.csv with users weight
  * @param weight
  * @param date 
  */
- public void updateLogWeight(double weight, String date) {
-  searchLogHistory(date).setDailyWeight(weight);
+ public void updateWeightLog(double weight, String date) {
+  searchPreviousLog(date).setDailyWeight(weight);
  }
 } //end of class

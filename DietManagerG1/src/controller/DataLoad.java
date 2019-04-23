@@ -71,7 +71,7 @@ public class DataLoad {
             FileWriter fw = new FileWriter(file);
             fw.write("");
 
-            Map<String, DietLog> logs = user.getLogHistory();
+            Map<String, DietLog> logs = user.getPreviousLog();
 
             for (Map.Entry<String, DietLog> entry : logs.entrySet()) {
 
