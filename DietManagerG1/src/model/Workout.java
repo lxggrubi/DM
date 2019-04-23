@@ -4,7 +4,7 @@ public class Workout {
 
  public double time;
  public String workoutName;
- public double caloriesSpent; //calories burned per hour
+ public double caloriesSpent; 
 
 
  /**

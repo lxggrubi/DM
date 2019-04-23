@@ -59,9 +59,9 @@ public class Nutrients extends JPanel {
     }
 
     public void update(DietLog dietLog) {
-        fat = (int) dietLog.getFatPerc();
-        carbs = (int) dietLog.getCarbPerc();
-        protein = (int) dietLog.getProteinPerc();
+        fat = (int) dietLog.getFatPercentage();
+        carbs = (int) dietLog.getCarbsPercentage();
+        protein = (int) dietLog.getProteinPercentage();
         updateUI();
     }
 

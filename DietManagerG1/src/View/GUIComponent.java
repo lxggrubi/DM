@@ -495,9 +495,9 @@ public class GUIComponent extends JFrame implements ActionListener {
 
         nameLbl.setText(dietController.getUserName());
         weightLbl.setText(Double.toString(log.getDailyWeight()) + " lbs.");
-        calsLbl.setText(Integer.toString(log.getTotalCalories()));
-        expendedLbl.setText(Double.toString(log.getTotalCaloriesBurned()));
-        netLbl.setText(Double.toString(log.getNetCals()));
+        calsLbl.setText(Integer.toString(log.getCaloriesSum()));
+        expendedLbl.setText(Double.toString(log.getCaloriesSpentSum()));
+        netLbl.setText(Double.toString(log.getCaloriesDifference()));
 
         remove(consumedScrollPane);
         consumedScrollPane = showFoodConsumed();

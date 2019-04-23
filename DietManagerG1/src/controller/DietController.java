@@ -161,7 +161,7 @@ public class DietController {
      * @return 
      */
     public DietLog getDesiredDietLog(String date) {
-        return user.searchLogHistory(date).calcTotals();
+        return user.searchLogHistory(date).calculatingSum();
     }
 
     // returns history of user's dietlog objects
@@ -218,7 +218,7 @@ public class DietController {
      * @param index 
      */
     public void removeFoodFromLog(int index) {
-        getTodaysLog().removeFoodByIndex(index);
+        getTodaysLog().removeIndexedFood(index);
     }
 
     /**
