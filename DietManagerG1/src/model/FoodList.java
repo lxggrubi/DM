@@ -6,37 +6,30 @@ import java.util.Map;
 public class FoodList {
  private Map < String, Food > foods = new HashMap < > ();
  /**
-  * Adding food to hashmap
+  * Method used to add food to HashMap
   * @param food 
   */
- public void addFood(Food food) {
-  this.foods.put(food.getName(), food);
+ public void addFood(Food _food) {
+  this.foods.put(_food.getName(), _food);
  }
+
  /**
   * 
-  * @param nameToRemove 
-  */
- public void removeFood(String nameToRemove) {
-  //todo
- }
- /**
-  * 
-  * @return the food from hashmap
+  * @return the food from HashMap
   */
  public Map < String, Food > getFoods() {
   return foods;
  }
 
  /**
-  * Takes the food fro hashmap and returns it to the user
+  * Takes the food fro HashMap and returns it to the user
   * @param key - The name of the food
-  * @return food from hashmap
+  * @return food from HashMap
   */
  public Food findFood(String key) {
-  for (String food: foods.keySet()) {
-   if (food.toLowerCase().equals(key.toLowerCase())) return foods.get(food).copy();
+  for (String f: foods.keySet()) {
+   if (f.toLowerCase().equals(key.toLowerCase())) return foods.get(f).copy();
   }
-
   return null;
  }
 }
