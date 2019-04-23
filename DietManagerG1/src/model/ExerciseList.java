@@ -6,37 +6,35 @@ import java.util.Map;
 
 public class ExerciseList extends Workout {
 
-    //The ArrayList of Workout objects
-    private Map<String, Workout> Exercises = new HashMap<>();
+ /**
+  * HashMap used for storing different types of workout
+  */
+ private Map < String, Workout > Exercises = new HashMap < > ();
 
-    /**
-     * Adds an exercise to the ArrayList of Workout objects
-     * @param exer - An Workout object
-     */
-    public void addExercise(Workout exer){
-        this.Exercises.put(exer.getName(), exer);
-    }
+ /**
+  * Method used to add the workouts to the array list (it is containing workout objects)
+  * @param exer - It is the workout object
+  */
+ public void addExercise(Workout exercise) {
+  this.Exercises.put(exercise.getWorkoutName(), exercise);
+ }
 
-    /**
-     * Gets an exercise that matches the name given by the user
-     * @param name - the name of the exercise the user wants to get
-     * @return - an Workout object
-     */
-    public Workout getExercise(String name){
-        for (String exer : Exercises.keySet()) {
-            if (exer.toLowerCase().equals(name.toLowerCase())) return Exercises.get(exer).copy();
-        }
+ /**
+  * Gets an exercise that matches the name given by the user
+  * @param workoutName - It is the name of workout
+  */
+ public Workout getExercise(String workoutName) {
+  for (String exer: Exercises.keySet()) {
+   if (exer.toLowerCase().equals(workoutName.toLowerCase())) return Exercises.get(exer).copy();
+  }
+  return null;
+ }
 
-        return null;
-    }
+ /**
+  * This is used to return the workout object  
+  */
+ public Map < String, Workout > getAllExercises() {
+  return Exercises;
+ }
 
-    /**
-     * Returns the whole ArrayList of Workout objects
-     * @return - the ArrayList of Exericse objects;
-     */
-    public Map<String, Workout> getAllExercises(){
-        return Exercises;
-    }
-
-
-}
+} //end of class

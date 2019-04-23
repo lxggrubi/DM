@@ -101,7 +101,7 @@ public class DietLog {
 	 * @return The total number of calories burned by the user
 	 */
 	public double caloriesBurned(Workout exer, double time){
-		double burnedCals = exer.getCaloriesBurned() * (this.dailyWeight / 100.0) * (time / 60);
+		double burnedCals = exer.getCaloriesSpent() * (this.dailyWeight / 100.0) * (time / 60);
 		totalCaloriesBurned += burnedCals;
 		return burnedCals;
 	}
@@ -114,7 +114,7 @@ public class DietLog {
 	public void logExercise(Workout exer, double time){
 		double burnedCalories = caloriesBurned(exer, time);
 
-		exer.setCaloriesBurned(burnedCalories);
+		exer.setCaloriesSpent(burnedCalories);
 		exer.setTime(time);
 		dailyExercise.add(exer);
 	}
@@ -142,8 +142,8 @@ public class DietLog {
 	public ArrayList<String> getExerciseInfo() {
 		ArrayList<String> ExerciseInfoList = new ArrayList<>();
 		for(Workout e: dailyExercise){
-			String eName = e.getName();
-			double calsBurned = e.getCaloriesBurned();
+			String eName = e.getWorkoutName();
+			double calsBurned = e.getCaloriesSpent();
 			String exerInfo = "Name: " + eName + "\nCalories: " + calsBurned;
 			ExerciseInfoList.add(exerInfo);
 		}
@@ -200,7 +200,7 @@ public class DietLog {
 		}
 
 		for(Workout e: dailyExercise){
-			totalBurned += e.getCaloriesBurned();
+			totalBurned += e.getCaloriesSpent();
 		}
 
 		this.totalCalories = totalCals;

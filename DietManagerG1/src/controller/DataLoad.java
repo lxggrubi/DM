@@ -95,7 +95,7 @@ public class DataLoad {
                 }
 
                 for (Workout e : value.getDailyExercise()) {
-                    String exerLine = dateLine + "e," + e.getName() + "," + e.getTime() + "\n";
+                    String exerLine = dateLine + "e," + e.getWorkoutName() + "," + e.getTime() + "\n";
                     fw.append(exerLine);
                 }
             }

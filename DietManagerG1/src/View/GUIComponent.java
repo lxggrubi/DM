@@ -470,7 +470,7 @@ public class GUIComponent extends JFrame implements ActionListener {
             Workout exercise = dailyExercise.get(i);
 
             JPanel innerPanel = new JPanel();
-            JLabel innerLabel = new JLabel("Exercise: " + exercise.getName() + "  Calories Burned: " + exercise.getCaloriesBurned());
+            JLabel innerLabel = new JLabel("Exercise: " + exercise.getWorkoutName() + "  Calories Burned: " + exercise.getCaloriesSpent());
 
             JButton innerButton = new JButton("-");
             final int index = i;
