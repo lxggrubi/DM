@@ -159,7 +159,7 @@ return (previousLog.get(currentDate) == null) ? previousLog.put(currentDate, new
    previousLog.put(date, selectedLog);
    return previousLog.get(date);
   }
- }
+ }//end of searchPreviousLog
 /**
  * Updating the calories limit for the user
  * @param maxCalories

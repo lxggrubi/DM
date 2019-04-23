@@ -15,16 +15,16 @@ public class Workout {
  /**
   * The parameterized constructor that will take workout
   * @param _workoutName - the name of the workout
-  * @param caloriesSpent -this is the number of the calories 
+  * @param _caloriesSpent -this is the number of the calories 
   */
- public Workout(String _workoutName, double _caloriesBurned) {
+ public Workout(String _workoutName, double _caloriesSpent) {
   this.workoutName = _workoutName;
-  this.caloriesSpent = _caloriesBurned;
+  this.caloriesSpent = _caloriesSpent;
  }
 
  /**
   * Mutator used to set the workout name
-  * @param _workoutName - 
+  * @param _workoutName - name for exercise
   */
  public void setName(String _workoutName) {
   this.workoutName = _workoutName;
@@ -39,7 +39,7 @@ public class Workout {
  }
 
  /**
-  * Mutator used to set the caloies that have been spent in hour
+  * Mutator used to set the calories that have been spent in hour
   * @param _caloriesSpent - the number of calories that have been spent
   */
  public void setCaloriesSpent(double _caloriesSpent) {
@@ -80,9 +80,9 @@ public class Workout {
   * @return 
   */
  public Workout copy() {
-  Workout exerciseCopy = new Workout(workoutName, caloriesSpent);
-  exerciseCopy.time = time;
-  return exerciseCopy;
+  Workout exCopy = new Workout(workoutName, caloriesSpent);
+  exCopy.time = time;
+  return exCopy;
  }
 
 } //end of class
